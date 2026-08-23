@@ -1,0 +1,17 @@
+# Ignore everything by default; whitelist only paper-related files
+/*
+!.gitignore
+!README.md
+
+# Paper (v4)
+!paper_lxai2026_v4.tex
+!paper_lxai2026_v4.pdf
+!checklist.tex
+!neurips_2026.sty
+!fig_v4.png
+
+# Reproduction
+!tutor_experiment_v4.ipynb
+!core_v4.py
+!experiment_v4_results.json
+!predictions.txt

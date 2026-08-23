@@ -1,0 +1,7 @@
+P1: bayesian_norest (estimacion sin gestion de viabilidad) colapsa al subir phi: dropout alto, gain al piso.
+P2: Los brazos Gamma se degradan proporcionalmente menos que el bayesiano a lo largo del barrido de phi.
+P3: Existe phi* dentro del rango valido de la puerta de calidad donde algun brazo Gamma supera al bayesiano en gain.
+P4: gamma_learned_argmax supera a gamma_learned en todos los puntos validos del barrido.
+P5: Si la calidad de g se transmite a la conducta, gamma_oracle se separa de gamma_no_learning en algun punto del barrido.
+P6: g_validity de gamma_learned decrece monotonamente al subir phi.
+P7: Bajo desplazamiento del PICO de la campana de aprendizaje (cambio de forma, no de escala), los brazos Gamma ganan terreno relativo frente al bayesiano, que queda mal especificado y no puede absorberlo re-estimando h.

@@ -1,0 +1,1190 @@
+{
+ "version": "v4-dose-response",
+ "rq": "Puede un agente homeostatico aprender g de consecuencias observables y usarla para regularse hacia un objetivo externo util?",
+ "design": "barrido dosis-respuesta; phi=0 reproduce v3; crossover predicho",
+ "predictions": {
+  "P1": "bayesian_norest (estimacion sin gestion de viabilidad) colapsa al subir phi: dropout alto, gain al piso.",
+  "P2": "Los brazos Gamma se degradan proporcionalmente menos que el bayesiano a lo largo del barrido de phi.",
+  "P3": "Existe phi* dentro del rango valido de la puerta de calidad donde algun brazo Gamma supera al bayesiano en gain.",
+  "P4": "gamma_learned_argmax supera a gamma_learned en todos los puntos validos del barrido.",
+  "P5": "Si la calidad de g se transmite a la conducta, gamma_oracle se separa de gamma_no_learning en algun punto del barrido.",
+  "P6": "g_validity de gamma_learned decrece monotonamente al subir phi.",
+  "P7": "Bajo desplazamiento del PICO de la campana de aprendizaje (cambio de forma, no de escala), los brazos Gamma ganan terreno relativo frente al bayesiano, que queda mal especificado y no puede absorberlo re-estimando h."
+ },
+ "predictions_sha256": "6e888c7e46e1dd306b6adc601a45cc08ff914a24d2f474a913a1ff2907bfc084",
+ "phis": [
+  0.0,
+  0.3,
+  0.6,
+  0.9,
+  1.2,
+  1.6
+ ],
+ "phis_valid": [
+  0.0,
+  0.3,
+  0.6,
+  0.9,
+  1.2
+ ],
+ "gate": {
+  "0.0": {
+   "always1": 0.00987,
+   "always5_drop": 100.0,
+   "random": 0.59571,
+   "oracle": 1.139285,
+   "margen": 0.5435750000000001,
+   "pass": true
+  },
+  "0.3": {
+   "always1": 0.035485,
+   "always5_drop": 100.0,
+   "random": 0.307445,
+   "oracle": 0.8683,
+   "margen": 0.5608549999999999,
+   "pass": true
+  },
+  "0.6": {
+   "always1": 0.072855,
+   "always5_drop": 100.0,
+   "random": 0.18246,
+   "oracle": 0.533155,
+   "margen": 0.35069500000000003,
+   "pass": true
+  },
+  "0.9": {
+   "always1": 0.10814,
+   "always5_drop": 100.0,
+   "random": 0.133245,
+   "oracle": 0.406145,
+   "margen": 0.2729,
+   "pass": true
+  },
+  "1.2": {
+   "always1": 0.14432999999999999,
+   "always5_drop": 100.0,
+   "random": 0.106835,
+   "oracle": 0.357105,
+   "margen": 0.25027,
+   "pass": true
+  },
+  "1.6": {
+   "always1": 0.16181500000000001,
+   "always5_drop": 100.0,
+   "random": 0.087605,
+   "oracle": 0.315945,
+   "margen": 0.22834,
+   "pass": false
+  }
+ },
+ "sweep": {
+  "0.0": {
+   "gamma_learned": {
+    "gain": 0.22456,
+    "drop": 0.0,
+    "tiz": 0.23696,
+    "exam_eff": 0.438215,
+    "desc": 9.705,
+    "g_val": 0.47097
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.234745,
+    "drop": 0.0,
+    "tiz": 0.231045,
+    "exam_eff": 0.440985,
+    "desc": 9.785,
+    "g_val": 0.60383
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.363385,
+    "drop": 5.0,
+    "tiz": 0.277255,
+    "exam_eff": 0.48566,
+    "desc": 4.895,
+    "g_val": 0.476935
+   },
+   "gamma_no_learning": {
+    "gain": 0.29939,
+    "drop": 0.0,
+    "tiz": 0.219715,
+    "exam_eff": 0.46452,
+    "desc": 6.53,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.264685,
+    "drop": 0.0,
+    "tiz": 0.234565,
+    "exam_eff": 0.452455,
+    "desc": 7.63,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.33026,
+    "drop": 0.0,
+    "tiz": 0.260785,
+    "exam_eff": 0.473095,
+    "desc": 6.15,
+    "g_val": 0.9955
+   },
+   "regla": {
+    "gain": 0.58485,
+    "drop": 0.0,
+    "tiz": 0.36854,
+    "exam_eff": 0.55934,
+    "desc": 0.135,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.588455,
+    "drop": 0.0,
+    "tiz": 0.369875,
+    "exam_eff": 0.56058,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 1.1266100000000001,
+    "drop": 0.0,
+    "tiz": 0.81222,
+    "exam_eff": 0.72514,
+    "desc": 1.045,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 1.121815,
+    "drop": 13.5,
+    "tiz": 0.80539,
+    "exam_eff": 0.722665,
+    "desc": 0,
+    "g_val": null
+   }
+  },
+  "0.3": {
+   "gamma_learned": {
+    "gain": 0.12954,
+    "drop": 0.0,
+    "tiz": 0.327055,
+    "exam_eff": 0.19931000000000001,
+    "desc": 8.445,
+    "g_val": 0.42897
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.167995,
+    "drop": 0.0,
+    "tiz": 0.328685,
+    "exam_eff": 0.193125,
+    "desc": 6.855,
+    "g_val": 0.46891
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.183285,
+    "drop": 9.5,
+    "tiz": 0.34401,
+    "exam_eff": 0.153425,
+    "desc": 4.235,
+    "g_val": 0.446155
+   },
+   "gamma_no_learning": {
+    "gain": 0.149885,
+    "drop": 0.0,
+    "tiz": 0.364215,
+    "exam_eff": 0.149065,
+    "desc": 5.765,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.15209,
+    "drop": 0.0,
+    "tiz": 0.338325,
+    "exam_eff": 0.17522000000000001,
+    "desc": 7.05,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.13968,
+    "drop": 0.0,
+    "tiz": 0.384765,
+    "exam_eff": 0.149575,
+    "desc": 5.82,
+    "g_val": 0.844835
+   },
+   "regla": {
+    "gain": 0.406385,
+    "drop": 0.0,
+    "tiz": 0.39474,
+    "exam_eff": 0.2467,
+    "desc": 0.28,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.410835,
+    "drop": 0.0,
+    "tiz": 0.400875,
+    "exam_eff": 0.245465,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.777565,
+    "drop": 0.0,
+    "tiz": 0.801065,
+    "exam_eff": 0.35832,
+    "desc": 2.205,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.68574,
+    "drop": 61.5,
+    "tiz": 0.76943,
+    "exam_eff": 0.3041,
+    "desc": 0,
+    "g_val": null
+   }
+  },
+  "0.6": {
+   "gamma_learned": {
+    "gain": 0.1359,
+    "drop": 2.0,
+    "tiz": 0.53085,
+    "exam_eff": 0.07412,
+    "desc": 6.55,
+    "g_val": 0.211815
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.161785,
+    "drop": 0.0,
+    "tiz": 0.51239,
+    "exam_eff": 0.07323,
+    "desc": 4.535,
+    "g_val": 0.527295
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.1601,
+    "drop": 24.0,
+    "tiz": 0.51352,
+    "exam_eff": 0.04782,
+    "desc": 3.75,
+    "g_val": 0.354505
+   },
+   "gamma_no_learning": {
+    "gain": 0.150345,
+    "drop": 0.0,
+    "tiz": 0.570095,
+    "exam_eff": 0.047615,
+    "desc": 5.05,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.132,
+    "drop": 1.0,
+    "tiz": 0.49702,
+    "exam_eff": 0.069425,
+    "desc": 6.22,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.15101,
+    "drop": 0.0,
+    "tiz": 0.599765,
+    "exam_eff": 0.04083,
+    "desc": 4.995,
+    "g_val": 0.933795
+   },
+   "regla": {
+    "gain": 0.26667,
+    "drop": 0.0,
+    "tiz": 0.48591,
+    "exam_eff": 0.08256,
+    "desc": 0.805,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.277035,
+    "drop": 8.5,
+    "tiz": 0.506215,
+    "exam_eff": 0.078895,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.36997,
+    "drop": 0.0,
+    "tiz": 0.596005,
+    "exam_eff": 0.080505,
+    "desc": 4.04,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.32394,
+    "drop": 98.5,
+    "tiz": 0.60676,
+    "exam_eff": 0.070775,
+    "desc": 0,
+    "g_val": null
+   }
+  },
+  "0.9": {
+   "gamma_learned": {
+    "gain": 0.13772,
+    "drop": 3.5,
+    "tiz": 0.60636,
+    "exam_eff": 0.03738,
+    "desc": 6.155,
+    "g_val": 0.139005
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.19712,
+    "drop": 0.0,
+    "tiz": 0.678215,
+    "exam_eff": 0.041865,
+    "desc": 3.375,
+    "g_val": 0.45599
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.1593,
+    "drop": 29.5,
+    "tiz": 0.56868,
+    "exam_eff": 0.0252,
+    "desc": 3.515,
+    "g_val": 0.29881
+   },
+   "gamma_no_learning": {
+    "gain": 0.149335,
+    "drop": 0.0,
+    "tiz": 0.623835,
+    "exam_eff": 0.024635,
+    "desc": 5,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.144875,
+    "drop": 2.0,
+    "tiz": 0.609185,
+    "exam_eff": 0.028225,
+    "desc": 5.65,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.1487,
+    "drop": 0.0,
+    "tiz": 0.650825,
+    "exam_eff": 0.02411,
+    "desc": 4.91,
+    "g_val": 0.949855
+   },
+   "regla": {
+    "gain": 0.21566,
+    "drop": 0.0,
+    "tiz": 0.62102,
+    "exam_eff": 0.0362,
+    "desc": 1.57,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.22712,
+    "drop": 39.0,
+    "tiz": 0.62066,
+    "exam_eff": 0.0325,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.22597,
+    "drop": 0.0,
+    "tiz": 0.451705,
+    "exam_eff": 0.03232,
+    "desc": 4.935,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.20496,
+    "drop": 100.0,
+    "tiz": 0.46292,
+    "exam_eff": 0.03159,
+    "desc": 0,
+    "g_val": null
+   }
+  },
+  "1.2": {
+   "gamma_learned": {
+    "gain": 0.13177,
+    "drop": 3.5,
+    "tiz": 0.626745,
+    "exam_eff": 0.02792,
+    "desc": 6.155,
+    "g_val": 0.11316999999999999
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.200565,
+    "drop": 0.0,
+    "tiz": 0.717205,
+    "exam_eff": 0.026314999999999998,
+    "desc": 2.855,
+    "g_val": 0.44816
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.151395,
+    "drop": 30.5,
+    "tiz": 0.57605,
+    "exam_eff": 0.023785,
+    "desc": 3.595,
+    "g_val": 0.245625
+   },
+   "gamma_no_learning": {
+    "gain": 0.1441,
+    "drop": 0.0,
+    "tiz": 0.64158,
+    "exam_eff": 0.023445,
+    "desc": 4.9,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.14207,
+    "drop": 2.5,
+    "tiz": 0.635985,
+    "exam_eff": 0.02415,
+    "desc": 5.58,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.146235,
+    "drop": 0.0,
+    "tiz": 0.66264,
+    "exam_eff": 0.023725,
+    "desc": 4.885,
+    "g_val": 0.931245
+   },
+   "regla": {
+    "gain": 0.19232,
+    "drop": 0.0,
+    "tiz": 0.67268,
+    "exam_eff": 0.024875,
+    "desc": 2.015,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.19972499999999999,
+    "drop": 58.5,
+    "tiz": 0.662465,
+    "exam_eff": 0.02405,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.1541,
+    "drop": 0.0,
+    "tiz": 0.38206,
+    "exam_eff": 0.02361,
+    "desc": 5.475,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.152405,
+    "drop": 100.0,
+    "tiz": 0.3736,
+    "exam_eff": 0.024325,
+    "desc": 0,
+    "g_val": null
+   }
+  },
+  "1.6": {
+   "gamma_learned": {
+    "gain": 0.13179,
+    "drop": 3.0,
+    "tiz": 0.658835,
+    "exam_eff": 0.026195,
+    "desc": 5.855,
+    "g_val": 0.15546
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.196055,
+    "drop": 0.0,
+    "tiz": 0.73135,
+    "exam_eff": 0.0231,
+    "desc": 2.725,
+    "g_val": 0.460525
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.14316,
+    "drop": 33.5,
+    "tiz": 0.584885,
+    "exam_eff": 0.02475,
+    "desc": 3.515,
+    "g_val": 0.26124
+   },
+   "gamma_no_learning": {
+    "gain": 0.13598,
+    "drop": 0.0,
+    "tiz": 0.65315,
+    "exam_eff": 0.023,
+    "desc": 4.925,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.13787,
+    "drop": 2.5,
+    "tiz": 0.656375,
+    "exam_eff": 0.02369,
+    "desc": 5.44,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.140075,
+    "drop": 0.0,
+    "tiz": 0.67007,
+    "exam_eff": 0.023,
+    "desc": 4.79,
+    "g_val": 0.913545
+   },
+   "regla": {
+    "gain": 0.181925,
+    "drop": 0.0,
+    "tiz": 0.706925,
+    "exam_eff": 0.023045,
+    "desc": 2.22,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.18222,
+    "drop": 66.5,
+    "tiz": 0.68897,
+    "exam_eff": 0.023,
+    "desc": 0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.10888,
+    "drop": 0.0,
+    "tiz": 0.34426,
+    "exam_eff": 0.023289999999999998,
+    "desc": 5.725,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.113475,
+    "drop": 100.0,
+    "tiz": 0.317965,
+    "exam_eff": 0.0232,
+    "desc": 0,
+    "g_val": null
+   }
+  }
+ },
+ "shift_sweep": {
+  "1.0": {
+   "gamma_learned": {
+    "gain": 0.1359,
+    "drop": 2.0,
+    "g_val": 0.211815
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.161785,
+    "drop": 0.0,
+    "g_val": 0.527295
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.1601,
+    "drop": 24.0,
+    "g_val": 0.354505
+   },
+   "gamma_no_learning": {
+    "gain": 0.150345,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.132,
+    "drop": 1.0,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.15101,
+    "drop": 0.0,
+    "g_val": 0.933795
+   },
+   "regla": {
+    "gain": 0.26667,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.277035,
+    "drop": 8.5,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.36997,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.32394,
+    "drop": 98.5,
+    "g_val": null
+   }
+  },
+  "2.0": {
+   "gamma_learned": {
+    "gain": 0.14203,
+    "drop": 4.0,
+    "g_val": 0.14587
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.19187,
+    "drop": 0.0,
+    "g_val": 0.49752
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.16892,
+    "drop": 27.0,
+    "g_val": 0.316155
+   },
+   "gamma_no_learning": {
+    "gain": 0.159285,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.14962,
+    "drop": 1.0,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.15328,
+    "drop": 0.0,
+    "g_val": 0.95793
+   },
+   "regla": {
+    "gain": 0.27081,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.28382,
+    "drop": 48.0,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.30673,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.31051,
+    "drop": 100.0,
+    "g_val": null
+   }
+  },
+  "3.0": {
+   "gamma_learned": {
+    "gain": 0.144865,
+    "drop": 4.0,
+    "g_val": 0.14952
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.192205,
+    "drop": 0.0,
+    "g_val": 0.503265
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.169245,
+    "drop": 27.0,
+    "g_val": 0.31572
+   },
+   "gamma_no_learning": {
+    "gain": 0.15979,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.153085,
+    "drop": 1.0,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.153735,
+    "drop": 0.0,
+    "g_val": 0.94965
+   },
+   "regla": {
+    "gain": 0.274175,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.28517,
+    "drop": 51.5,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.300135,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.31036,
+    "drop": 100.0,
+    "g_val": null
+   }
+  },
+  "4.0": {
+   "gamma_learned": {
+    "gain": 0.14447,
+    "drop": 4.0,
+    "g_val": 0.14526
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.191625,
+    "drop": 0.0,
+    "g_val": 0.49831
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.16944,
+    "drop": 27.0,
+    "g_val": 0.315415
+   },
+   "gamma_no_learning": {
+    "gain": 0.159735,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "gamma_naive": {
+    "gain": 0.153195,
+    "drop": 1.0,
+    "g_val": null
+   },
+   "gamma_oracle": {
+    "gain": 0.1537,
+    "drop": 0.0,
+    "g_val": 0.947745
+   },
+   "regla": {
+    "gain": 0.274435,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "regla_norest": {
+    "gain": 0.285095,
+    "drop": 51.5,
+    "g_val": null
+   },
+   "bayesian": {
+    "gain": 0.298825,
+    "drop": 0.0,
+    "g_val": null
+   },
+   "bayesian_norest": {
+    "gain": 0.31036,
+    "drop": 100.0,
+    "g_val": null
+   }
+  }
+ },
+ "shape_sweep": {
+  "0.5": {
+   "gamma_learned": {
+    "gain": 0.1359,
+    "drop": 2.0,
+    "tiz": 0.53085
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.161785,
+    "drop": 0.0,
+    "tiz": 0.51239
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.1601,
+    "drop": 24.0,
+    "tiz": 0.51352
+   },
+   "gamma_no_learning": {
+    "gain": 0.150345,
+    "drop": 0.0,
+    "tiz": 0.570095
+   },
+   "gamma_naive": {
+    "gain": 0.132,
+    "drop": 1.0,
+    "tiz": 0.49702
+   },
+   "gamma_oracle": {
+    "gain": 0.15101,
+    "drop": 0.0,
+    "tiz": 0.599765
+   },
+   "regla": {
+    "gain": 0.26667,
+    "drop": 0.0,
+    "tiz": 0.48591
+   },
+   "regla_norest": {
+    "gain": 0.277035,
+    "drop": 8.5,
+    "tiz": 0.506215
+   },
+   "bayesian": {
+    "gain": 0.36997,
+    "drop": 0.0,
+    "tiz": 0.596005
+   },
+   "bayesian_norest": {
+    "gain": 0.32394,
+    "drop": 98.5,
+    "tiz": 0.60676
+   }
+  },
+  "1.0": {
+   "gamma_learned": {
+    "gain": 0.097785,
+    "drop": 2.0,
+    "tiz": 0.49226
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.130665,
+    "drop": 0.0,
+    "tiz": 0.47201
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.12767,
+    "drop": 24.0,
+    "tiz": 0.47795
+   },
+   "gamma_no_learning": {
+    "gain": 0.112615,
+    "drop": 0.0,
+    "tiz": 0.535265
+   },
+   "gamma_naive": {
+    "gain": 0.0972,
+    "drop": 1.0,
+    "tiz": 0.458055
+   },
+   "gamma_oracle": {
+    "gain": 0.108875,
+    "drop": 0.0,
+    "tiz": 0.582375
+   },
+   "regla": {
+    "gain": 0.22388,
+    "drop": 0.0,
+    "tiz": 0.389445
+   },
+   "regla_norest": {
+    "gain": 0.233395,
+    "drop": 9.0,
+    "tiz": 0.395385
+   },
+   "bayesian": {
+    "gain": 0.359555,
+    "drop": 0.0,
+    "tiz": 0.7193
+   },
+   "bayesian_norest": {
+    "gain": 0.325225,
+    "drop": 98.5,
+    "tiz": 0.65488
+   }
+  },
+  "1.5": {
+   "gamma_learned": {
+    "gain": 0.06461,
+    "drop": 2.0,
+    "tiz": 0.189305
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.10279,
+    "drop": 0.0,
+    "tiz": 0.2506
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.097755,
+    "drop": 24.0,
+    "tiz": 0.187055
+   },
+   "gamma_no_learning": {
+    "gain": 0.07382,
+    "drop": 0.0,
+    "tiz": 0.15955
+   },
+   "gamma_naive": {
+    "gain": 0.06674,
+    "drop": 1.0,
+    "tiz": 0.16943
+   },
+   "gamma_oracle": {
+    "gain": 0.06477,
+    "drop": 0.0,
+    "tiz": 0.17404
+   },
+   "regla": {
+    "gain": 0.201645,
+    "drop": 0.0,
+    "tiz": 0.283835
+   },
+   "regla_norest": {
+    "gain": 0.210135,
+    "drop": 9.0,
+    "tiz": 0.285885
+   },
+   "bayesian": {
+    "gain": 0.3412,
+    "drop": 0.0,
+    "tiz": 0.64208
+   },
+   "bayesian_norest": {
+    "gain": 0.322745,
+    "drop": 98.5,
+    "tiz": 0.6463
+   }
+  },
+  "2.0": {
+   "gamma_learned": {
+    "gain": 0.05466,
+    "drop": 2.0,
+    "tiz": 0.193225
+   },
+   "gamma_learned_argmax": {
+    "gain": 0.091225,
+    "drop": 0.0,
+    "tiz": 0.247725
+   },
+   "gamma_learned_restdrive": {
+    "gain": 0.08905,
+    "drop": 24.0,
+    "tiz": 0.18538
+   },
+   "gamma_no_learning": {
+    "gain": 0.06302,
+    "drop": 0.0,
+    "tiz": 0.16019
+   },
+   "gamma_naive": {
+    "gain": 0.057665,
+    "drop": 1.0,
+    "tiz": 0.16719
+   },
+   "gamma_oracle": {
+    "gain": 0.052135,
+    "drop": 0.0,
+    "tiz": 0.172695
+   },
+   "regla": {
+    "gain": 0.1923,
+    "drop": 0.0,
+    "tiz": 0.254895
+   },
+   "regla_norest": {
+    "gain": 0.20066,
+    "drop": 9.0,
+    "tiz": 0.2565
+   },
+   "bayesian": {
+    "gain": 0.317895,
+    "drop": 0.0,
+    "tiz": 0.565065
+   },
+   "bayesian_norest": {
+    "gain": 0.318925,
+    "drop": 98.5,
+    "tiz": 0.62727
+   }
+  }
+ },
+ "shape_gate": {
+  "0.5": {
+   "always1": 0.072855,
+   "always5_drop": 100.0,
+   "random": 0.18246,
+   "oracle": 0.533155,
+   "margen": 0.35069500000000003,
+   "pass": true
+  },
+  "1.0": {
+   "always1": 0.031745,
+   "always5_drop": 100.0,
+   "random": 0.182295,
+   "oracle": 0.480485,
+   "margen": 0.29818999999999996,
+   "pass": true
+  },
+  "1.5": {
+   "always1": 0.023935,
+   "always5_drop": 100.0,
+   "random": 0.18193,
+   "oracle": 0.458515,
+   "margen": 0.27658499999999997,
+   "pass": true
+  },
+  "2.0": {
+   "always1": 0.02319,
+   "always5_drop": 100.0,
+   "random": 0.1805,
+   "oracle": 0.44363,
+   "margen": 0.26313000000000003,
+   "pass": true
+  }
+ },
+ "verdicts": {
+  "P1": {
+   "confirmada": true,
+   "detalle": "bayesian_norest dropout 14% -> 100%"
+  },
+  "P2": {
+   "confirmada": true,
+   "detalle": "degradacion relativa gamma_learned 41% vs bayesian 86%"
+  },
+  "P3": {
+   "confirmada": true,
+   "detalle": "crossover en phi=1.2 (gamma_learned_argmax +0.201 > bayesian +0.154)"
+  },
+  "P4": {
+   "confirmada": true,
+   "detalle": "argmax>softmax en 5/5 puntos; en phi=1.2: d=+1.47, p=0.0000"
+  },
+  "P5": {
+   "confirmada": false,
+   "detalle": "oracle ~ learned ~ no_learning en TODO el rango: la calidad de g NO se transmite a la conducta"
+  },
+  "P6": {
+   "confirmada": true,
+   "detalle": "g_validity +0.471 (phi=0.0) -> +0.113 (phi=1.2)"
+  },
+  "P7": {
+   "confirmada": false,
+   "detalle": "gap Gamma-bayesiano -0.208 (peak=0.5) -> -0.227 (peak=2.0): se AGRANDA - los brazos Gamma se degradan MAS que el estimador mal especificado"
+  }
+ },
+ "profiles": [
+  {
+   "h0": 1.74,
+   "lr_mult": 1.0,
+   "umbral": 2.4
+  },
+  {
+   "h0": 3.22,
+   "lr_mult": 0.76,
+   "umbral": 2.1
+  },
+  {
+   "h0": 2.7,
+   "lr_mult": 1.03,
+   "umbral": 2.7
+  },
+  {
+   "h0": 2.6,
+   "lr_mult": 1.14,
+   "umbral": 2.7
+  },
+  {
+   "h0": 3.0,
+   "lr_mult": 1.05,
+   "umbral": 2.1
+  },
+  {
+   "h0": 2.73,
+   "lr_mult": 0.77,
+   "umbral": 2.8
+  },
+  {
+   "h0": 2.4,
+   "lr_mult": 1.19,
+   "umbral": 2.6
+  },
+  {
+   "h0": 2.86,
+   "lr_mult": 0.83,
+   "umbral": 2.1
+  },
+  {
+   "h0": 3.46,
+   "lr_mult": 1.26,
+   "umbral": 2.8
+  },
+  {
+   "h0": 3.5,
+   "lr_mult": 1.01,
+   "umbral": 1.9
+  },
+  {
+   "h0": 2.18,
+   "lr_mult": 1.03,
+   "umbral": 2.2
+  },
+  {
+   "h0": 2.41,
+   "lr_mult": 1.23,
+   "umbral": 2.6
+  },
+  {
+   "h0": 2.65,
+   "lr_mult": 0.71,
+   "umbral": 2.7
+  },
+  {
+   "h0": 2.23,
+   "lr_mult": 0.95,
+   "umbral": 2.3
+  },
+  {
+   "h0": 2.67,
+   "lr_mult": 1.0,
+   "umbral": 1.9
+  },
+  {
+   "h0": 2.51,
+   "lr_mult": 1.15,
+   "umbral": 2.5
+  },
+  {
+   "h0": 2.48,
+   "lr_mult": 1.25,
+   "umbral": 2.1
+  },
+  {
+   "h0": 2.34,
+   "lr_mult": 1.26,
+   "umbral": 2.4
+  },
+  {
+   "h0": 2.54,
+   "lr_mult": 0.72,
+   "umbral": 2.1
+  },
+  {
+   "h0": 1.76,
+   "lr_mult": 0.73,
+   "umbral": 2.6
+  }
+ ],
+ "seeds": [
+  837721,
+  589639,
+  47017,
+  427067,
+  273617,
+  707969,
+  70607,
+  644909,
+  555097,
+  450761
+ ],
+ "arms": [
+  "gamma_learned",
+  "gamma_learned_argmax",
+  "gamma_learned_restdrive",
+  "gamma_no_learning",
+  "gamma_naive",
+  "gamma_oracle",
+  "regla",
+  "regla_norest",
+  "bayesian",
+  "bayesian_norest"
+ ],
+ "cfg_base": {
+  "lam_p": 0.15,
+  "alpha_p": 0.3,
+  "alpha_c": 0.3,
+  "theta": 0.7
+ }
+}
