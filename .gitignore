@@ -15,3 +15,10 @@
 !core_v4.py
 !experiment_v4_results.json
 !predictions.txt
+!core.py
+!common.py
+!run_all.py
+!requirements.txt
+!LICENSE
+!experiments/
+!figures/

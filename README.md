@@ -342,7 +342,7 @@ produced by executing the scripts in this repository.
                   The Policy Bottleneck in Homeostatic Agents},
   year         = {2026},
   howpublished = {LatinX in AI Workshop, NeurIPS 2026},
-  note         = {Code: https://anonymous.4open.science/r/gamma-n2-policy-bottleneck-0000}
+  note         = {Code: https://anonymous.4open.science/r/student_simulator-0AA6}
 }
 ```
 

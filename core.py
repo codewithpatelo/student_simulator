@@ -155,7 +155,16 @@ class GammaAgent:
             self.g_prog[nivel]=(1-self.cfg.eta)*self.g_prog[nivel]+self.cfg.eta*(4.0*a*(1.0-a))
             self.g_conf[nivel]=(1-self.cfg.eta)*self.g_conf[nivel]+self.cfg.eta*a
         elif self.cfg.g_mode=="oracle":
+            # Expected-gain oracle. NOTE: the progress drive is satiated only on
+            # correct trials, so expected reduction per session is p*alpha*g_prog.
+            # Dividing by a constant therefore makes the drive chase p*E[gain].
             self.g_prog[nivel]=min(1.0,env.expected_gain(nivel)/0.042)
+            self.g_conf[nivel]=rasch_p(env.h_eff,nivel)
+        elif self.cfg.g_mode=="oracle_corrected":
+            # Divides by p(correct) so that the EXPECTED drive reduction is
+            # proportional to true expected gain: p * (E[gain]/p) = E[gain].
+            p=max(1e-3,rasch_p(env.h_eff,nivel))
+            self.g_prog[nivel]=min(1.0,env.expected_gain(nivel)/p/0.042)
             self.g_conf[nivel]=rasch_p(env.h_eff,nivel)
         if self.cfg.g_mode=="naive": gp=gc=self.cfg.g_naive
         else: gp=self.g_prog[nivel]; gc=self.g_conf[nivel]
