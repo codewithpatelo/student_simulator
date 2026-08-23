@@ -37,7 +37,7 @@ A homeostatic agent acts to keep internal drives near their setpoints, so its be
 \centering
 \small
 Code and data to reproduce every number, table and figure:\\
-\url{https://anonymous.4open.science/r/gamma-n2-policy-bottleneck-0000}\\
+\url{https://anonymous.4open.science/r/student_simulator-0AA6}\\
 \emph{(anonymized for review; replace with the archival link on acceptance)}
 \par
 \endgroup
@@ -45,17 +45,15 @@ Code and data to reproduce every number, table and figure:\\
 
 \section{Introduction}
 
-What moves an agent to act? In biology, action is not a default state --- it emerges when internal variables leave viable ranges \cite{Cannon1932}. Yet dominant paradigms in autonomous agent design optimize external objectives and rarely treat internal regulatory integrity as a first-class concern. What the agent itself \emph{needs} is systematically absent.
+What moves an agent to act? In biology, action is not a default state --- it emerges when internal variables leave viable ranges \cite{Cannon1932}. Yet dominant paradigms in agent design optimize external objectives and rarely treat internal regulatory integrity as first-class: what the agent itself \emph{needs} is absent. That shows in where engineering effort has gone --- from prompt to context to harness and loop engineering, successive scaffolding layers around a capable model, each adding capability and none adding motivation. This line bets on a different move, from \textbf{agent engineering} to \textbf{agent cybernetics}: less effort adding capabilities, more inserting the structure that decides when and why a capability should be exercised at all.
 
-That absence shows in where engineering effort has gone: from prompt engineering to context engineering to harness and loop engineering, successive scaffolding layers around a capable model. Each adds capability; none adds motivation. This line of work bets on a different move --- from \textbf{agent engineering} to \textbf{agent cybernetics}: less effort adding capabilities, more inserting the regulatory structure that decides when and why a capability should be exercised. It matters because deployment surfaces the failure modes capability alone does not address --- agents that over-optimize, accumulate context until collapse, or pursue goals long after they stop being appropriate. Autonomy is the capacity to \emph{remain viable while doing}, not just to \emph{do}.
-
-Prior work in this line established feasibility. The Pro-Action Operator $\Gamma$ showed that coupled homeostatic drives integrated with LLM reasoning produce behaviour differentiated by opponent type in iterated social dilemmas (ICML 2026, anonymized). A single-drive variant produced emergent regulatory behaviour in debate facilitation without any reinforcement learning --- and surfaced a structural limitation: $g$ was hand-designed, and when misaligned the system regulated toward the wrong attractor (SANLP 2026, anonymized). Tied to a structural metric it regulated participation but not semantic fidelity; tied to an LLM judge, context collapse \emph{quintupled}. The loop worked --- toward the wrong thing.
+Prior work in this line established feasibility. The Pro-Action Operator $\Gamma$ showed that coupled homeostatic drives with LLM reasoning produce behaviour differentiated by opponent type in iterated social dilemmas (ICML 2026, anonymized). A single-drive variant produced emergent regulatory behaviour in debate facilitation without reinforcement learning --- and surfaced a structural limitation: $g$ was hand-designed, and when misaligned the system regulated toward the wrong attractor (SANLP 2026, anonymized). Tied to a structural metric it regulated participation but not semantic fidelity; tied to an LLM judge, context collapse \emph{quintupled}. The loop worked --- toward the wrong thing.
 
 We call this the \textbf{Satiation Signal Problem (SSP)}: how is $g$ defined so the system regulates toward a desired external goal? It is one problem inside the broader agenda of agent cybernetics, not the agenda itself --- but it gates the rest, because the mechanism is value-neutral and the signal feeding it decides what it regulates toward. So we ask: \textbf{can a homeostatic agent learn $g$ from the observable consequences of its own actions, and use it to regulate toward an externally useful goal?} The domain is a student with forty study sessions before an exam, choosing difficulty guided by two drives --- one pushing, one braking --- while never observing its own ability, fatigue or frustration.
 
-A single operating point cannot answer this: an earlier iteration produced a null admitting two incompatible readings --- the signal does not matter, or the environment never applied pressure enough to make it matter. We therefore sweep the pressure, hash the predictions before execution, gate every sweep point, and analyze 100 profiles as the paired design it is.
+A single operating point cannot answer this: an earlier iteration produced a null admitting two incompatible readings --- the signal does not matter, or the environment never applied pressure enough to make it matter. We therefore sweep the pressure, hash the predictions before execution, gate every sweep point, and analyze 100 profiles as the paired design it is. Our central result is a decomposition rather than a verdict. Holding the hand-chosen policy fixed, an expected-gain oracle buys $7.7\%$ of the gap to a state-estimating baseline while re-tuning six coefficients buys $25.0\%$, and most of the gap survives both. But the two are not independent, and that is the finding: search the policy harder and the value of a good signal roughly doubles, from $+0.047$ to $+0.121$ ($p{=}.022$ over five searches). A satiation signal is worth little until the channel can carry it.
 
-Our central result is a decomposition rather than a verdict. Holding the agent's hand-chosen policy fixed, a perfect oracle $g$ buys $7.7\%$ of the gap to a state-estimating baseline while re-tuning six coefficients buys $25.0\%$, and most of the gap survives both. But the two terms are not independent, and that turns out to be the finding. Search the policy harder and the value of a good signal roughly doubles, from $+0.047$ to $+0.121$ ($p{=}.022$ over five independent searches): a satiation signal is worth little until the channel can carry it. Knowing what you need is necessary and nowhere near sufficient. Where regulation earns a role is viability, and there too we narrow an earlier claim: with rest disabled the homeostatic agent still reaches $93.5\%$ dropout against the estimator's $100\%$, so viability is bought by having \emph{some} rest mechanism.
+Where regulation earns a role is viability, and there too we narrow an earlier claim: with rest disabled the homeostatic agent still reaches $93.5\%$ dropout against the estimator's $100\%$, so viability is bought by having \emph{some} rest mechanism.
 
 Four contributions follow: the decomposition, with paired effect sizes and confidence intervals and replicated on the goal metric; the matched-tuning result, which shows a \emph{learned} signal matches a constant under a modest search budget and beats it only under a larger one; a methodology --- dose--response sweeps with per-point gating, hashed predictions, multiplicity-corrected existence tests, and multi-seed tuning with held-out validation --- for architectures making claims about \emph{regimes}; and a revision of our own applicability framework, including a sixth condition under which the ordering reverses. We also report, in the body rather than a footnote, three of our own claims that stricter protocols forced us to withdraw.
 
@@ -92,15 +90,13 @@ These five are our starting position; Section~\ref{sec:sixth} revises them in li
 
 Everything below follows from one design choice: the agent is given \emph{needs}, not goals --- two of them, both deficits that grow until something quiets them.
 
-The first, $\delta_{\text{prog}}$, is the itch of coasting --- what you feel in the third week of lifting the same comfortable weight: nothing is going wrong, and that is exactly the problem. It grows as sessions pass, faster the more you are already succeeding, and is quieted only by genuine progress. Left alone it pushes upward.
+The first, $\delta_{\text{prog}}$, is the itch of coasting --- what you feel in the third week of lifting the same comfortable weight: nothing is going wrong, and that is exactly the problem. It grows as sessions pass, faster the more you are already succeeding, and is quieted only by genuine progress. The second, $\delta_{\text{conf}}$, is the flinch after a bad run --- what makes you re-rack the bar after two failed lifts. It jumps on errors and is quieted by easy successes. Left alone the first pushes upward, the second pulls down.
 
-The second, $\delta_{\text{conf}}$, is the flinch after a bad run --- what makes you re-rack the bar after two failed lifts. It jumps on errors and is quieted by easy successes. Left alone it pulls downward.
-
-Neither drive is a goal, and neither knows anything about difficulty levels. The agent never observes its ability, fatigue or frustration --- only which level it chose, whether it was right, and how long it took. Behaviour is whatever falls out of two deficits pulling opposite ways.
+Neither is a goal, and neither knows anything about difficulty levels. The agent never observes its ability, fatigue or frustration --- only which level it chose, whether it was right, and how long it took. Behaviour is whatever falls out of two deficits pulling opposite ways.
 
 \subsection{Why two drives and not one}
 
-A single drive cannot tell the two failure modes apart: if the agent is dissatisfied, is the material too easy or too hard? A lone drive registers only ``not satisfied'' either way. This is Ashby's requisite variety \cite{Ashby1952} in concrete form, and two antagonistic drives are the minimum.
+A single \emph{scalar} drive of the form we use cannot tell the two failure modes apart: if the agent is dissatisfied, is the material too easy or too hard? It registers only ``not satisfied'' either way. This motivates two antagonistic drives, in the spirit of Ashby's requisite variety \cite{Ashby1952}. We state this as a design choice, not a proven minimum --- a single drive with signed updates or level-conditioned satiation might well recover the distinction, and we ran no one-drive ablation to rule that out.
 
 Formally, each drive $i$ has a setpoint $\theta$ and evolves per session as
 
@@ -121,7 +117,7 @@ g_{\text{prog}}[k] \leftarrow (1-\eta)\, g_{\text{prog}}[k] + \eta \cdot 4\,\tex
 g_{\text{conf}}[k] \leftarrow (1-\eta)\, g_{\text{conf}}[k] + \eta \cdot \text{acc}[k]
 \end{equation}
 
-The intuition is ordinary: a level where you get everything right teaches little, and so does one where you get everything wrong. A mastered level yields low $g_{\text{prog}}$, correct answers barely satisfy the progress drive, it keeps growing, and the agent climbs. An impossible level also yields low $g_{\text{prog}}$ while errors inflate confidence, and the agent retreats. In between, satiation balances growth. \textbf{The target band is never encoded --- it is where the dynamics come to rest.}
+The intuition is ordinary: a level where you get everything right teaches little, and so does one where you get everything wrong. A mastered level yields low $g_{\text{prog}}$, so correct answers barely satisfy the progress drive, it keeps growing, and the agent climbs; an impossible level also yields low $g_{\text{prog}}$ while errors inflate confidence, and the agent retreats. \textbf{The target band is never encoded --- it is where the dynamics come to rest.}
 
 One property bounds everything that follows: $4a(1-a)$ is symmetric with its maximum at $a{=}0.5$, whereas expected gain in our environment is maximized at a difficulty gap of $0.40$, where accuracy is only $0.354$. The rule's peak sits on the wrong side of the true optimum, capping achievable fidelity regardless of how much data the agent collects.
 
@@ -135,11 +131,11 @@ The operator itself is deliberately cheap: per session, $O(n^2)$ coupling update
 
 \subsection{The environment, and the two things that make it a test}
 
-The simulated student has a hidden ability $h$; correctness at level $k$ follows a Rasch model \cite{Rasch1960}, $p=\sigma(1.5(h_{\text{eff}}-k))$. Learning peaks at a moderate stretch above current ability and falls off both ways, and failing at something challenging still teaches, so playing safe is not trivially optimal. Effort accumulates and drags down both effective ability and the capacity to learn; recovery slows sharply past a threshold, so exhaustion cannot simply be slept off. Resting costs one of the forty sessions and induces mild forgetting. Frustration rises with errors, rises further when failing at something previously mastered, falls with easy successes, and if sustained near a personal threshold for three sessions the student quits for good. Fatigue also carries a deferred cost \emph{during} the episode: it degrades both effective ability and the capacity to learn at every session, so strain that is cheap now is expensive later.
+The simulated student has a hidden ability $h$; correctness at level $k$ follows a Rasch model \cite{Rasch1960}, $p=\sigma(1.5(h_{\text{eff}}-k))$. Learning peaks at a moderate stretch above current ability and falls off both ways, and failing at something challenging still teaches, so playing safe is not trivially optimal. Effort accumulates and drags down both effective ability and the capacity to learn; recovery slows sharply past a threshold, so exhaustion cannot be slept off. Resting costs a session and induces mild forgetting. Frustration rises with errors, more so when failing at something previously mastered, falls with easy successes, and if sustained near a personal threshold for three sessions the student quits for good. Fatigue also carries a deferred cost \emph{during} the episode: it degrades both effective ability and the capacity to learn at every session, so strain that is cheap now is expensive later.
 
 \paragraph{Primary outcome.} Every contrast in this paper is on \textbf{learning gain}, $h_{\text{final}}-h_0$: \emph{latent} ability accumulated over the budget. Terminal fatigue is therefore not penalized in the primary outcome directly --- it acts through the trajectory, by suppressing how much is learned in each fatigued session. A terminal exam score on \emph{effective} ability is reported as a secondary diagnostic only (Appendix~\ref{app:exam}); it is not dropout-adjusted, so arms that quit still receive a score, and it should not be read as the task objective. The non-bankable alternative, mean readiness, is analyzed separately in Section~\ref{sec:sixth}.
 
-Two details are load-bearing. Fatigue must carry a \emph{deferred} cost, because an estimator updating from outcomes already tracks current fatigue for free --- an accumulator earns its keep only if strain that is cheap now is expensive later. And quitting must be reachable, or viability is not a live variable. An earlier version of this environment failed both, which is why it produced an uninterpretable null.
+Two details are load-bearing. Fatigue must carry a \emph{deferred} cost, since an estimator updating from outcomes already tracks current fatigue for free --- an accumulator earns its keep only if strain that is cheap now is expensive later. And quitting must be reachable, or viability is not a live variable. An earlier version failed both, which is why it produced an uninterpretable null.
 
 \subsection{Turning the adversity up, rather than picking one setting}
 
@@ -149,7 +145,7 @@ Sweeping raises its own problem: at extreme adversity an environment can stop di
 
 \subsection{Committing to predictions before looking}
 
-A sweep with ten arms and six points offers many places to find a story after the fact. The predictions below were therefore written as plain text and hashed with SHA-256 before any sweep executed:
+A sweep with ten arms and six points offers many places to find a story after the fact, so the predictions below were written as plain text and hashed with SHA-256 before any sweep ran:
 
 \begin{center}\texttt{6e888c7e46e1dd306b6adc601a45cc08ff914a24d2f474a913a1ff2907bfc084}\end{center}
 
@@ -176,119 +172,79 @@ One caveat applies to every arm: the rest mechanism --- $\Gamma$'s strain gate a
 
 \subsection{Main sweep}
 
-Across the valid range the estimator falls from $+1.132$ to $+0.156$ while $\Gamma$\_learned moves only from $+0.248$ to $+0.143$; dropout stays at zero for every arm that can rest and climbs from $16\%$ to $100\%$ for the estimator that cannot (Appendix~\ref{app:fullsweep}).
+Across the valid range the estimator falls from $+1.132$ to $+0.156$ while $\Gamma$\_learned moves only from $+0.248$ to $+0.143$. Dropout stays at or near zero for arms that can rest ($0\%$ estimator and rule, $\le2\%$ $\Gamma$\_learned, $4$--$17\%$ drive-rest) and climbs from $16\%$ to $100\%$ for the estimator that cannot (Appendix~\ref{app:fullsweep}).
 
 
-\textbf{P1 confirmed.} \texttt{estimator\_norest} rises from $16\%$ to $100\%$ dropout: estimating your state perfectly is worthless if you quit in session 20. \textbf{P2 confirmed}, and tested as an interaction rather than a ratio of aggregates: fitting each profile's own gain-versus-$\phi$ slope, the estimator falls at $-0.808$ per unit $\phi$ while $\Gamma$\_learned falls at $-0.070$, a paired difference of $+0.737$, CI $[+0.706,+0.769]$, $d_z{=}{+}4.65$. The regulated agent is flatter, not merely lower.
+\textbf{P1 confirmed.} \texttt{estimator\_norest} rises from $16\%$ to $100\%$ dropout: estimating your state perfectly is worthless if you quit in session 20. \textbf{P2 confirmed over the gated range} --- an exploratory subset, since the gate thresholds were not committed --- and tested as an interaction rather than a ratio of aggregates: fitting each profile's own gain-versus-$\phi$ slope, the estimator falls at $-0.808$ per unit $\phi$ while $\Gamma$\_learned falls at $-0.070$, a paired difference of $+0.737$, CI $[+0.706,+0.769]$, $d_z{=}{+}4.65$. The regulated agent is flatter, not merely lower.
 
 \subsection{Decomposing the gap: signal, policy, residual}
 
-\textbf{All figures in this subsection are for $\phi{=}0$ and do not transfer across the sweep}, where the gap itself shrinks sharply (Appendix~\ref{app:fullsweep}). At $\phi{=}0$ the estimator leads by $+0.846$ on the 50 profiles never used for any tuning. We decompose that gap with a $2{\times}2$ over signal quality (constant vs.\ oracle $g$) and policy parameterization (hand-chosen vs.\ coefficients re-tuned by a 250-candidate search; Appendix~\ref{app:coefsearch}). The components sum exactly (Appendix~\ref{app:decomp}): signal $+0.065$ ($7.7\%$), policy $+0.211$ ($25.0\%$), interaction $-0.018$ ($-2.1\%$), residual $+0.588$ ($69.5\%$). Against the model-free estimator of Section~\ref{sec:objmodel}, arguably the fairer comparator, the gap is $+0.576$ and the shares become $11.2$, $36.6$, $-3.1$ and $55.2\%$: the ordering is unchanged, only the magnitudes move.
+\textbf{All figures in this subsection are for $\phi{=}0$ and do not transfer across the sweep}, where the gap itself shrinks sharply (Appendix~\ref{app:fullsweep}).
+
+\paragraph{Sample split.} The 100 profiles are partitioned once, before any tuning: 1--50 are the tuning pool, of which the first 20 rank candidate coefficients, and 51--100 are held out and never participate in selection. Every number in this subsection, in Section~\ref{sec:matched}, in the abstract and in the conclusions comes from the held-out 50 (Appendix~\ref{app:splits}).
+
+At $\phi{=}0$ the estimator leads by $+0.846$ on the held-out profiles. We decompose that gap with a $2{\times}2$ over signal quality (constant vs.\ oracle $g$) and policy parameterization (hand-chosen vs.\ coefficients selected by a 250-candidate search on the scoring subset; Appendix~\ref{app:coefsearch}). The components sum exactly (Appendix~\ref{app:decomp}): signal $+0.065$ ($7.7\%$), policy $+0.211$ ($25.0\%$), interaction $-0.018$ ($-2.1\%$), residual $+0.588$ ($69.5\%$). Against the model-free estimator of Section~\ref{sec:objmodel}, arguably the fairer comparator, the gap is $+0.576$ and the shares become $11.2$, $36.6$, $-3.1$ and $55.2\%$: the ordering is unchanged, only the magnitudes move.
 
 \paragraph{Is the oracle really an oracle?} The progress drive is satiated only on correct trials, so its expected reduction is $p\cdot\alpha\cdot g_{\text{prog}}$: dividing expected gain by a constant makes the drive chase $p\cdot\mathbb{E}[\text{gain}]$, not $\mathbb{E}[\text{gain}]$. Re-running with $g_{\text{prog}}=\mathbb{E}[\text{gain}]/p$ moves the arm from $+0.335$ to $+0.343$ and the signal share from $7.7\%$ to $8.6\%$: the misalignment is real but immaterial, since with five discrete levels both definitions share an argmax. We nonetheless call this an \textbf{expected-gain oracle} rather than a perfect $g$ --- it is ground truth for $g_{\text{prog}}$ only, with a heuristic $g_{\text{conf}}$.
 
-We stress what the residual is and is not. It is the portion unexplained by \emph{the two interventions we ran} --- one signal substitution and one six-coefficient search. It also absorbs unsearched policy space, the fixed action representation, and any joint signal--policy optimum those searches missed. It is not a proven structural constant.
+The residual is the portion unexplained by \emph{the two interventions we ran} --- one signal substitution, one six-coefficient search. It also absorbs unsearched policy space, the fixed action representation, and any joint optimum those searches missed. It is not a proven structural constant.
 
-\subsection{Matched tuning: how much a signal is worth depends on the policy}
+\subsection{What a signal is worth depends on the policy}
 \label{sec:matched}
 
-The shared coefficients above were optimized against stable signals, so applying them to a noisy learned signal is not a fair test --- a point we owe to review. We therefore repeated the search per signal. A first version used one search each and validated on the profiles it had tuned on; it produced a non-monotonic ordering in which a learned $g$ beat a perfect one, which we initially reported as the headline. It does not survive a stricter protocol: independent searches per signal, validated on \textbf{50 profiles never used for tuning}.
+The shared coefficients above were optimized against stable signals, so applying them to a noisy learned signal is not a fair test. We therefore repeated the search per signal --- five independent searches each, at two budgets, validated on the 50 profiles never used for tuning (Appendix~\ref{app:matchedtab}).
 
+At 250 candidates the oracle beats a constant by $+0.047$ ($d_z{=}{+}1.22$) and a learned $g$ is equivalent to a constant ($+0.008$, TOST $p<10^{-4}$). At 1200 the oracle's advantage grows to $+0.121$ (CI $[+0.029,+0.213]$, $p{=}.022$ across searches) and the learned signal's to $+0.094$, directional at $p{=}.062$. Searching the policy harder did not make the signal irrelevant --- it roughly doubled what the signal is worth, which is the complementarity the title turns on: \textbf{a satiation signal is worth little until the channel can carry it}.
 
-At the smaller budget the picture is the one we first reported: the oracle beats a constant in five of five searches, by $+0.047$ on paired held-out profiles (CI $[+0.036,+0.058]$, $d_z{=}{+}1.22$), while a \emph{learned} $g$ is \textbf{statistically equivalent} to a constant --- $+0.008$, CI $[-0.002,+0.018]$, $p{=}.11$, TOST against $\delta{=}0.05$ giving $p<10^{-4}$.
+Two caveats bound this. The equivalence holds \emph{conditional on these searches}: treating the search as the random unit, the learned-minus-constant difference changes sign across seeds ($p{=}.85$, TOST $=.18$), so it is inconclusive rather than equivalent as a property of the procedure. And an earlier single-search version of this analysis produced a non-monotonic ordering, in which a learned $g$ beat a perfect one, that five searches erase.
 
-That equivalence is budget-dependent. At 1200 candidates, with the same five search seeds, the oracle's advantage over a constant grows to $+0.121$ (CI $[+0.029,+0.213]$, $p{=}.022$ across searches, $5/5$ wins), while the learned signal's advantage grows to $+0.094$ but is \emph{not} statistically established once uncertainty over the search itself is accounted for (CI $[-0.008,+0.195]$, $p{=}.062$, though also $5/5$ in direction). Searching the policy harder did not make the signal irrelevant; it made the signal matter roughly $2.6\times$ more.
+\subsection{Signal quality, policy noise, and the crossover}
+\label{sec:policy}\label{sec:objmodel}\label{sec:misspec}
 
-An earlier three-seed version showed a larger effect and a drop in the constant-$g$ cell that we attributed to overfitting; with five seeds the constant recovers to $+0.487$ and the gap shrinks. That drop was search noise, and we report the corrected figures.
+\textbf{P5 is confirmed with a boundary} (Appendix~\ref{app:p5}). At $\phi{=}0$ the expected-gain oracle is worth $+0.063$ ($d_z{=}{+}1.59$, $p{=}6\times10^{-29}$); from $\phi{=}0.3$ onward the difference falls inside the equivalence bound at every margin from $0.02$ to $0.10$ --- practical equivalence, not a proven null. This corrects an earlier analysis of ours that applied independent-samples tests to this paired design and reported no separation anywhere.
 
-The honest conclusion is about complementarity, not ranking. \textbf{A satiation signal is worth little until the channel can carry it}. Two earlier claims of ours fall with this: that a learned $g$ buys nothing over a constant holds only at the smaller budget, and even at the larger one its advantage is directional rather than significant; and that signal quality is simply the smallest term holds under a fixed policy but misleads as a general statement. What survives, and what the title asserts, is that knowing what you need is necessary and far from sufficient --- over half the gap outlives both interventions at either budget.
+\textbf{P4 is confirmed}, the effect growing from $d_z{=}{+}0.21$ to $d_z{=}{+}3.23$, though the argmax contrast is not a clean isolation of sampling noise: changing the action rule moves the whole closed loop, and $\Gamma$\_argmax attains higher signal validity under an identical learning rule because systematic visitation yields cleaner estimates.
 
-\subsection{Is the estimator winning because it knows the objective?}
-\label{sec:objmodel}
+\textbf{P3 is confirmed against the model-based estimator}, by $+0.045$ at $\phi{=}1.2$ (CI $[+0.028,+0.062]$), and survives multiplicity correction over all $\Gamma$ arms and adversity points ($p{=}.0005$ by max-statistic permutation). But it carries three qualifications that together withdraw most of its force. It belongs to the deterministic \texttt{$\Gamma$\_argmax} ablation, not the main agent, which scores $+0.143$ against $+0.156$. It sits below our own $\delta{=}0.05$ practical threshold. And it does not survive a stronger baseline: an estimator stripped of its objective model --- keeping ability tracking but no model of which level maximises gain --- scores $+0.275$ at that same point. That ablation also answers a natural objection: privileged objective knowledge is \emph{not} what wins, since removing it costs the estimator in the benign regime ($+1.132\to+0.851$) yet \emph{helps} it under adversity, where the model is misspecified, while it stays three to six times ahead of $\Gamma$ throughout (Appendix~\ref{app:objmodel}).
 
-The estimator does more than track ability: it also knows which level maximizes learning gain --- privileged knowledge of the simulator's objective, which might explain the gap by itself. We therefore added an estimator that keeps ability tracking but discards that model, matching the level to its ability estimate. Removing it costs the estimator in the benign regime ($+1.132\to+0.851$) but \emph{helps} it under adversity, where the model is misspecified ($+0.156\to+0.275$ at $\phi{=}1.2$; Appendix~\ref{app:objmodel}).
+\textbf{P6 is confirmed over the gated range but is policy-dependent}: validity for $\Gamma$\_learned falls from $+0.493$ to $+0.281$ while $\Gamma$\_argmax holds at $+0.452$, so learnability is bounded by non-stationarity \emph{under a stochastic policy} rather than by non-stationarity as such.
 
-So the answer is no: stripped of its objective model the estimator stays three to six times better than $\Gamma$. But this baseline costs us a claim. \textbf{The crossover does not survive against it} --- at $\phi{=}1.2$ the model-free estimator scores $+0.275$ against $\Gamma$\_argmax's $+0.201$. We therefore withdraw the crossover as evidence that homeostatic regulation overtakes state estimation, and retain it only as evidence that a \emph{misspecified} objective model degrades faster than drive-based regulation.
-
-\subsection{Signal quality across adversity, and the crossover}
-\label{sec:policy}
-
-\textbf{P5 is confirmed, with a boundary} (Appendix~\ref{app:p5}). At $\phi{=}0$ the expected-gain oracle is worth $+0.063$ ($d_z{=}{+}1.59$, $p{=}6\times10^{-29}$); from $\phi{=}0.3$ onward the difference falls inside the equivalence bound at every margin from $0.02$ to $0.10$ --- practical equivalence, not a proven null. This corrects an earlier analysis of ours that applied independent-samples tests to this paired design and reported no separation anywhere: a Type II error from discarding the within-subject structure.
-
-\textbf{P4 confirmed}, with the effect growing monotonically from $d_z{=}{+}0.21$ at $\phi{=}0$ to $d_z{=}{+}3.23$ at $\phi{=}1.2$ (full contrasts in Appendix~\ref{app:polcontrast}).
-
-\textbf{P3 confirmed against the model-based estimator} --- though not against the stronger one of Section~\ref{sec:objmodel}. At $\phi{=}1.2$ the regulated agent overtakes by $+0.045$, CI $[+0.028,+0.062]$, and since P3 is an existence claim a max-statistic sign-flip permutation over all $\Gamma$ arms and valid $\phi$ gives $p{=}.0005$ (max $t{=}{+}5.18$ at that cell). Two qualifications: the crossover belongs to the \texttt{$\Gamma$\_argmax} ablation, not the main agent (\texttt{$\Gamma$\_learned} scores $+0.143$ against $+0.156$), and $+0.045$ sits below our own $\delta{=}0.05$ threshold --- a robust reversal of ordering, not a large one. Excluding $\phi{=}1.6$ was conservative: including it the contrast grows to $+0.089$, $d_z{=}{+}1.54$.
-
-The argmax contrast is not a clean isolation of sampling noise: changing the action rule moves the entire closed loop --- visitation, fatigue, rest frequency, and the resulting $g$ estimates. $\Gamma$\_argmax attains higher signal validity ($+0.550$ vs.\ $+0.493$ at $\phi{=}0$) under an identical learning rule, because systematic visitation yields cleaner estimates. Read P4 as ``the deterministic policy is better,'' not as ``sampling noise costs this much.''
-
-\textbf{P6 confirmed but policy-dependent.} Validity for $\Gamma$\_learned falls from $+0.493$ to $+0.281$; for $\Gamma$\_argmax it holds at $+0.452$. Learnability is therefore not bounded by non-stationarity as such --- it is bounded by non-stationarity \emph{under a stochastic policy}.
-
-\subsection{Model misspecification, not situated information}
-\label{sec:misspec}
-
-Moving the learning curve's peak mid-episode leaves the estimator's model wrong in a way re-estimation cannot fix. \textbf{P7 is refuted}: the gap does not shrink but \emph{widens}, from $-0.181$ to $-0.198$ ($d_z$ $-1.02$ to $-1.26$, all $p<10^{-16}$; Appendix~\ref{app:shapegate}) --- at the largest shift the estimator picks a level yielding roughly $13\%$ of achievable gain and still wins threefold. This does \emph{not} refute situated information, and we were too quick to say it did: the manipulation corrupts the competitor's model rather than granting $\Gamma$ a private signal, and $\Gamma$'s own rule is anchored at $a{=}0.5$, so when the peak moves the estimator's fixed assumption ends up \emph{closer} to truth than $\Gamma$'s. Condition (4) therefore \textbf{remains untested}.
+\textbf{P7 is refuted}, and instructively. Moving the peak of the learning curve mid-episode leaves the estimator's model wrong in a way re-estimation cannot repair, yet the gap \emph{widens} rather than shrinking ($-0.181\to-0.198$). We initially read this as refuting the value of situated information; it does not. The manipulation corrupts the competitor's model rather than granting $\Gamma$ a private signal, and $\Gamma$'s own rule, anchored at accuracy $0.5$, ends up further from the true peak than the estimator's fixed assumption. Condition (4) remains untested (Appendix~\ref{app:shapegate}).
 
 \section{Discussion}
 
-\subsection{Did we answer the question we asked?}
+So: can a homeostatic agent learn $g$ from observable consequences? Partly. It recovers the rank order of $g_{\text{prog}}$ across levels, at validity $+0.493$ against a $+0.994$ ceiling --- but that is a terminal five-point correlation, silent on $g_{\text{conf}}$, on calibration, and on the behaviourally operative $p\cdot\alpha\cdot g$, so rank order can be right while the magnitudes driving the dynamics are wrong. And can it use that signal to regulate toward the external goal? Only marginally. An oracle buys under a tenth of the distance to a simple estimator while a rigid policy buys over three times more; under a fixed policy the signal is the smallest of the terms, and its value grows only as the policy improves.
 
-\emph{Can a homeostatic agent learn $g$ from observable consequences?} Yes --- validity $+0.493$ against a $+0.994$ ceiling. \emph{Can it use that signal to regulate toward the external goal?} Only marginally: a perfect signal buys under a tenth of the distance to a simple estimator while a rigid policy buys nearly four times more, and a \emph{learned} signal is indistinguishable from a well-chosen constant. The satiation signal is neither the bottleneck nor irrelevant; it is the smallest of the terms.
+That leaves the viability claim, our most confident, which did not survive. It rested on comparing the regulated agent against an estimator with \emph{no} rest mechanism --- only one side could rest. Disable rest on both and the estimator hits $100\%$ dropout against $\Gamma$'s $93.5\%$: the predicted direction, but close to a foregone conclusion where fatigue accumulates without bound. Worse for us, the \emph{rule} baseline stripped of rest reaches only $55\%$ at $\phi{=}1.2$, \emph{more} viable than $\Gamma$ without rest, so the advantage holds against the state estimator specifically rather than against every rest-less baseline. Where all agents can rest, all sit near zero dropout and the estimator additionally wins on gain. Viability is bought by having \emph{some} rest mechanism, and a two-line heuristic buys more of it than the drives do. We had also claimed that regulation folds the stopping decision into the machinery that picks difficulty; Appendix~\ref{app:agent} says otherwise, since the default rest logit is frustration-gated and the drives barely participate. That claim survives only for \texttt{restdrive}, which pays $4$--$17\%$ dropout for it.
 
-\subsection{Is the homeostatic mechanism buying viability?}
+None of this is comfortable for a framework that declares five conditions under which regulation should pay, so it is worth asking whether this domain satisfies them --- because if it does, the framework is in trouble. Conditions (3) and (5) hold cleanly, and (3) delivers exactly the predicted signature: across the sweep the estimator loses $86\%$ of its gain and $\Gamma$ only $42\%$. Condition (1) holds \emph{cheaply}, since quitting is reachable but a one-line guard erases it, and condition (2) holds only nominally, since the estimator carries no confidence drive and still wins. Condition (4) fails outright, and we can price the failure: running the estimator's update rule as an external observer that sees only the level attempted and whether the answer was correct gives a mean $|\hat h - h_{\text{eff}}|$ of $0.32$ at $\phi{=}0$ and $0.86$ at $\phi{=}1.2$, on a scale where levels sit $1.0$ apart. In the benign regime nothing is private.
 
-Our most confident claim, and it did not survive. The comparison behind it pitted the regulated agent against an estimator with \emph{no} rest mechanism --- only one side could rest. Disable rest on both and the estimator hits $100\%$ dropout, $\Gamma$ $93.5\%$: the predicted direction, not a difference in kind, and arguably a foregone conclusion in an environment where fatigue accumulates without bound. The informative comparison is the one where both can rest --- and there both sit near zero dropout, with the estimator also ahead on gain. Viability is bought by having \emph{some} rest mechanism; a hand-coded rule recovers nearly all of it.
+That asymmetry is the crux. Conditions (1), (2), (3) and (5) establish only that regulation is \emph{needed}; condition (4) is the one that establishes the agent must be the one doing it. It is load-bearing, and we treated all five as equals. But note what the measurement does and does not show --- that \emph{this} environment grants no private information about ability, not that $\Gamma$ would exploit such information if it had any, since no arm is ever given a signal the estimator lacks. Condition (4) is diagnosed as absent here and remains untested as a mechanism. Suggestively, $\Gamma$ gains ground exactly where reconstruction becomes hard: as the error climbs from $0.32$ to $0.86$, the estimator collapses and $\Gamma$ does not.
 
-We also claimed regulation folds stopping into the machinery that picks difficulty. Appendix~\ref{app:agent} says otherwise: the default agent's rest logit is frustration-gated, so the drives barely participate. The claim holds only for \texttt{restdrive} --- which pays $4$--$17\%$ dropout for it.
+\label{sec:sixth}We suspect a sixth condition is missing, and it explains our result better than the other five. Homeostasis is a \emph{maintenance} formalism: no horizon, no notion that an exam falls on session 40. Our task has a terminal objective and gain can be banked, so more is always better --- we were asking a regulator to maximise a payoff. Hence: \textbf{the objective must be the maintenance itself, not a terminal payoff that maintenance merely enables.} What would we expect to see if that were right? Replacing the terminal objective with one that \emph{cannot} be banked --- mean readiness, the score you would get if the exam were today, averaged over every session --- should reverse the ordering, and it does, though for one arm under a conjunction of three conditions. At our own setting ($\phi{=}0.6$, 40 sessions) $\Gamma$\_argmax still loses ($d_z{=}{-}1.07$); at horizon 400 it passes the model-based estimator ($+0.076$); with severe adversity it beats \emph{both} ($+0.044$, $+0.031$). The reversal belongs to the deterministic ablation --- \texttt{$\Gamma$\_learned} never overtakes the model-free estimator at any horizon or adversity (Appendix~\ref{app:maintenance}). We offer it as \emph{suggested} rather than established: post-hoc, confined to one arm, and needing a conjunction we did not preregister. But it could have failed, and a first version did --- merely lengthening the horizon, with gain still accumulative, changed nothing. Duration was never the variable. Bankability was.
 
-\subsection{Our framework says this is a regulatory problem. Why did regulation lose?}
-
-Section~\ref{sec:regulatory} lists five conditions under which we expect regulation to pay. Does this domain satisfy them? If it does, the framework is in trouble.
-
-Conditions (3) and (5) hold cleanly, and (3) delivers the predicted signature: across the sweep the estimator loses $86\%$ of its gain, $\Gamma$ only $42\%$. Condition (1) holds \emph{cheaply} --- quitting is reachable, but a one-line guard erases it. Condition (2) holds nominally: the estimator has no confidence drive and still wins, so the antagonism is not irreducible.
-
-Condition (4) fails outright, and we can price it. We ran the estimator's own update rule as an external observer --- it sees only the level attempted and whether the answer was correct, never ability, fatigue or frustration --- and measured $|\hat h - h_{\text{eff}}|$ from session 10 onward across 40 profiles $\times$ 5 seeds. Mean absolute error is $0.32$ at $\phi{=}0$ and $0.86$ at $\phi{=}1.2$, on a scale where difficulty levels sit $1.0$ apart. In the benign regime nothing is private.
-
-That is the crux. Conditions (1), (2), (3) and (5) say regulation is \emph{needed}; only (4) says the agent must be the one doing it. It is load-bearing, and we treated all five as equals. But note what the measurement shows: that \emph{this} environment grants no private information about ability, not that $\Gamma$ would exploit such information if it had any --- no arm is ever granted a signal the estimator lacks. Condition (4) is diagnosed as absent here and remains \textbf{untested as a mechanism}. Suggestively, $\Gamma$ gains ground exactly where reconstruction becomes hard: as the error goes from $0.32$ to $0.86$, the estimator collapses and $\Gamma$ does not.
-
-\subsection{Is a sixth condition missing?}
-\label{sec:sixth}
-
-We think so, and it explains our result better than the other five. Homeostasis is a \emph{maintenance} formalism: no horizon, no notion that an exam falls on session 40. Our task has a terminal objective, and accumulated gain can be banked, so more is always better. We were asking a regulator to maximize a payoff. Hence a sixth condition: \textbf{the objective must be the maintenance itself, not a terminal payoff that maintenance merely enables.}
-
-What would we expect if that is right? Replace the terminal objective with one that \emph{cannot} be banked --- mean readiness, the score you would get if the exam were today, averaged over every session --- and the ordering should reverse. It does, but for \textbf{one arm and under a conjunction of three conditions}. At our own setting ($\phi{=}0.6$, 40 sessions) $\Gamma$\_argmax still loses ($d_z{=}{-}1.07$). Stretch the horizon to 400 and it passes the model-based estimator ($+0.076$, $d_z{=}{+}2.09$). Add severe adversity and it beats \emph{both} ($+0.044$ and $+0.031$, $d_z{=}{+}0.73$ and $+0.61$) while dropping out more often --- so among survivors the margin is wider still. The reversal belongs to the deterministic ablation: \texttt{$\Gamma$\_learned} scores $0.041$ at that cell and never overtakes the model-free estimator at any horizon or adversity level (Appendix~\ref{app:maintenance}). We therefore offer the sixth condition as \emph{suggested} by these results rather than established: the reversal is post-hoc, confined to one arm, and requires a conjunction we did not preregister. Establishing it would take a preregistered factorial over bankability, horizon, adversity and policy type.
-
-A caution: post-hoc test of a post-hoc diagnosis, outside the committed predictions. But it could have failed, and a first version did. Merely lengthening the horizon, with gain still accumulative, changed nothing. Duration was never the variable. Bankability was.
-
-\subsection{What the methodology caught}
-
-Several of our own claims fell here, each to one methodological choice. An unpaired test on a paired design hid a real signal effect. A single tuning search invented a non-monotonic ordering that five searches erased, and a three-seed run inflated an effect that five seeds halved. An unablated baseline let us credit homeostasis for what a rest rule was doing. Regulatory architectures make claims about \emph{regimes} and are evaluated within-subject: dose--response sweeps, paired inference, multi-seed tuning with held-out validation, and ablation of the \emph{baselines} --- not only the proposal --- should be default.
+Several claims of ours fell during this work, each to one specific methodological choice; Appendix~\ref{app:withdrawn} lists all eight, since the pattern is the transferable part.
 
 \section{Limitations}
 \label{sec:limitations}
 
-\textbf{The crossover is small, not the main agent's, and does not survive the stronger baseline} (Sections~\ref{sec:objmodel},~\ref{sec:policy}). At $\phi{=}1.2$ all $\Gamma$ arms lie between $+0.14$ and $+0.20$ against $+1.13$ for the estimator at $\phi{=}0$: $\Gamma$ wins by degrading less, not by performing well.
-
-\textbf{Signal validity is incompletely operationalised}: only $g_{\text{prog}}$, against terminal expected gain, as a five-point correlation, with $g_{\text{conf}}$ unvalidated. Relatedly $4a(1-a)$ peaks at $a{=}0.5$ while expected gain is maximised where accuracy is $0.354$, capping fidelity by functional form. \textbf{$\phi$ is a compound knob} --- it moves fatigue severity, learning-rate degradation, error rates and dropout reachability together --- so the sweep cannot attribute the differing degradation slopes to non-linearity specifically.
-
-\textbf{Policy tuning was a random search.} 250 candidates show the original coefficients were poorly chosen; they do not find the best policy. The residual therefore also absorbs unsearched policy space, the fixed action representation, and any joint signal--policy optimum we missed. It is the gap unexplained by \emph{the interventions we tested}, not a structural constant.
-
-\textbf{Researcher degrees of freedom remain}: a self-attested hash, gate thresholds outside the committed text (though including the excluded point strengthens the contrast), and a post-hoc sixth condition. Condition (2) is untested. The simulator is simple, the domain single-task, and six visits per level is thin for estimating $g$ --- itself one of our findings.
+The crossover is small, belongs to the deterministic ablation, and does not survive the stronger baseline. \textbf{Signal validity is incompletely operationalised}: only $g_{\text{prog}}$, as a terminal five-point correlation, with $g_{\text{conf}}$ unvalidated and no measure of the operative $p\cdot\alpha\cdot g$; and $4a(1-a)$ peaks at $a{=}0.5$ while expected gain is maximised at accuracy $0.354$, capping fidelity by functional form. \textbf{$\phi$ is a compound knob}, so the sweep cannot isolate non-linearity, and \textbf{policy tuning was a random search}, so the residual is an upper bound on what is structural. \textbf{Researcher degrees of freedom remain}: a self-attested hash, uncommitted gate thresholds, a post-hoc sixth condition, untested conditions (2) and (4). Six visits per level is thin for estimating $g$ --- itself one of our findings.
 
 \section{Future Work}
 
-The decomposition sets the priority: with most of the gap unexplained by signal or coefficients, the next step is to \textbf{learn the policy}, not the signal. We are non-committal about the method --- prior work in this line found value-based RL integrated poorly with homeostatic drives, for reasons we do not yet understand --- so direct policy search over the coefficient vector is the conservative first step, with evolutionary methods natural given how few parameters the operator has. Since matched tuning shows signal and policy must be co-adapted, they should be searched jointly, and condition (4) needs a test granting $\Gamma$ a genuinely private signal.
+The decomposition sets the priority: with most of the gap unexplained by signal or coefficients, the next step is to \textbf{learn the policy}, not the signal. We are non-committal about the method --- prior work in this line found value-based RL integrated poorly with homeostatic drives, for reasons we do not yet understand --- so direct policy search is the conservative first step, with evolutionary methods natural given how few parameters the operator has, and signal and policy should be searched jointly since matched tuning shows they must be co-adapted. Conditions (2) and (4) need dedicated tests: a one-drive ablation for the first, and for the second an experiment in which $\Gamma$ receives a genuinely private internal signal withheld from the estimator.
 
-A third question follows from our own null: if a learned $g$ matches but does not beat a constant, the culprit may be that it \emph{keeps} learning. A constant has zero variance; a signal estimated from six visits per level injects noise into the drives at every step, indefinitely. Would a \textbf{convergence-stopped} signal --- annealing $\eta\to0$, or freezing $g$ once its moving average stabilizes --- keep the bias reduction while shedding the variance?
+A further question follows from our own null. If a learned $g$ matches a constant under a modest budget, the culprit may be that it \emph{keeps} learning: a constant has zero variance, while a signal estimated from six visits per level injects noise into the drives at every step, indefinitely. Would a \textbf{convergence-stopped} signal --- annealing $\eta\to0$, or freezing $g$ once its moving average stabilises --- keep the bias reduction of learning while shedding its variance?
 
-Most consequential is allostasis. Homeostasis corrects after deviation; allostasis anticipates it \cite{SterlingEyer1988}. The jump demands a \textbf{world model}: a learned predictor of environmental dynamics and of how actions propagate through them, rolled forward before committing. Not a self-model --- the regularities live in the world. Harder material produces errors at a rate set by the gap to ability. Effort compounds non-linearly. Recovery has a threshold. The agent authors none of these laws and must infer them; its drives are merely where they register. Knowing your own state predicts nothing unless you also know how the world will act on it. That is what the Good Regulator Theorem demands, and the system to model is the coupled pair, not the agent alone. World model as mechanism, feedforward as implementation, allostasis as principle --- and our residual is precisely what it would have to explain.
+Most consequential is allostasis. Homeostasis corrects after deviation; allostasis anticipates it \cite{SterlingEyer1988}. The jump demands a \textbf{world model}: a learned predictor of environmental dynamics and of how the agent's actions propagate through them, rolled forward over candidate actions before any is committed. What separates it from a self-model is that the regularities to be discovered are \emph{in the world}. Harder material produces errors at a rate set by the gap to ability. Effort compounds non-linearly. Recovery has a threshold past which it slows. The agent authors none of these laws and must infer them; its drives are merely where they register. Knowing your own state predicts nothing about the future unless you also know how the world will act on it. That is what the Good Regulator Theorem demands --- a regulator must contain a model of the system it regulates --- and here the system is the coupled pair, not the agent alone. World model as mechanism, feedforward as implementation, allostasis as principle; our residual is precisely what such a model would have to explain. Validation against real educational data would then test transfer beyond simulation.
+
+\section{Compute and LLM usage}
+
+Every experiment here runs in seconds on a laptop with no GPU, and no language model participates in the agent, environment, baselines or analysis --- all are explicit numerical simulations, with LLMs used only as coding and writing assistants. Specifications and the tool-by-tool disclosure are in Appendix~\ref{app:compute}.
 
 \section{Conclusion}
 
-Can a homeostatic agent learn its satiation signal from observable consequences and use it to regulate toward an external goal? Analyzed as the paired design it is: signal quality matters, and matters least. Under a fixed hand-chosen policy, a perfect signal is worth $7.7\%$ of the gap to a simple estimator and six policy coefficients $25.0\%$. But searching the policy harder triples what the signal is worth and flips their interaction positive: the two are complementary, and a signal is worth little until the channel can carry it. Around $59\%$ of the gap outlives both interventions --- unexplained by what we tested, not proven structural.
-
-Diagnosing why sent us back to our own framework, and we found it under-specified. Of five conditions, only one --- that the agent hold what an outside observer cannot --- makes homeostatic architecture necessary rather than merely applicable, and our domain fails it. We add a sixth: the objective must be maintenance, not a terminal payoff. Restore both and the ordering reverses.
-
-Knowing what you need is not what limits you. The open problem is the channel, not the signal.
+Can a homeostatic agent learn its satiation signal from observable consequences and use it to regulate toward an external goal? Partly, and less than we expected. On held-out profiles an expected-gain oracle is worth $7.7\%$ of the gap to a simple estimator while six policy coefficients are worth $25.0\%$, and the two are complementary: searching the policy harder roughly doubles what a good signal is worth. Over half the gap outlives both interventions. Diagnosing why exposed our own framework as under-specified --- of five conditions only one, that the agent hold what an outside observer cannot, makes homeostatic architecture necessary rather than merely applicable, and our domain fails it. Knowing what you need is not what limits you: the open problem is the channel.
 
 {
 \small
@@ -413,13 +369,13 @@ Only the first criterion fails at $\phi{=}1.6$ ($+0.162$ against a $0.15$ cutoff
 \section{Additive decomposition}
 \label{app:decomp}
 \begin{table}[H]
-  \caption{Components of the $\phi{=}0$ gap. \textbf{Left pair: the held-out estimate used in the abstract, body and conclusions} --- coefficients selected on a 20-profile scoring subset and evaluated on 50 profiles never used for tuning. \textbf{Right pair: the earlier partly in-sample estimate}, retained only to show what validation leakage costs. \textbf{Key take-away:} leakage inflates the policy term by about three points and the ordering is unchanged.}
+  \caption{Components of the $\phi{=}0$ gap. \textbf{Left pair: the held-out estimate used in the abstract, body and conclusions} (coefficients ranked on 20 scoring profiles, evaluated on 50 never used for tuning). \textbf{Right pair: the superseded partly in-sample estimate}, retained only to show what leakage costs. \textbf{Key take-away:} leakage inflates the policy term by under three points and leaves the ordering unchanged.}
   \centering\small
   \begin{tabular}{lrrrr}
     \toprule
     Component & held-out & \% & in-sample & \% \\
     \midrule
-    Signal quality (oracle $-$ constant, hand policy) & +0.065 & 7.7 & +0.063 & 8.6 \\
+    Signal quality (oracle $-$ constant, hand policy) & +0.065 & 7.7 & +0.063 & 7.4 \\
     Policy coefficients (re-tuned $-$ hand, constant $g$) & +0.211 & 25.0 & +0.238 & 27.7 \\
     Interaction & $-0.018$ & $-2.1$ & $-0.047$ & $-5.5$ \\
     Residual (estimator $-$ best $\Gamma$) & +0.588 & 69.5 & +0.606 & 70.5 \\
@@ -548,45 +504,88 @@ Paired contrasts for $\Gamma$\_argmax, $n{=}60$ profiles: at $\phi{=}0.6$, $H{=}
 \section{Matched-tuning results}
 \label{app:matchedtab}
 
+Five independent search seeds at each budget, all validated on the 50 profiles never used for tuning.
+
 \begin{table}[H]
-  \caption{Held-out validation gain by signal and search budget; five independent search seeds at each budget, mean (sd). Last column: oracle $-$ constant, and learned $-$ constant. \textbf{Key take-away:} how much signal quality is worth is not a property of the signal --- it roughly doubles when the policy is searched harder.}
+  \caption{Held-out gain per search seed. \textbf{Key take-away:} at the smaller budget the learned-minus-constant difference changes sign across searches, which is why the equivalence claim is conditioned on these searches rather than asserted for the tuning procedure.}
   \label{tab:matched}
   \centering\small
-  \begin{tabular}{lrrr}
+  \begin{tabular}{llrrrrrrr}
     \toprule
-    Signal & 250 candidates, 5 seeds & 1200 candidates, 3 seeds & oracle $-$ constant \\
+    Budget & Signal & s1 & s2 & s3 & s4 & s5 & mean & sd \\
     \midrule
-    constant $g$ & $+0.472$ (0.051) & $+0.487$ (0.060) & --- \\
-    learned $g$  & $+0.480$ (0.068) & $+0.581$ (0.059) & $+0.008 \to +0.094$ \\
-    oracle $g$   & $+0.519$ (0.052) & $+0.608$ (0.036) & $+0.047 \to +0.121$ \\
+    250  & constant & .464 & .458 & .473 & .412 & .554 & .472 & .051 \\
+    250  & learned  & .439 & .455 & .599 & .471 & .438 & .480 & .068 \\
+    250  & oracle   & .509 & .569 & .499 & .447 & .570 & .519 & .052 \\
+    \midrule
+    1200 & constant & .411 & .466 & .478 & .574 & .505 & .487 & .060 \\
+    1200 & learned  & .545 & .680 & .527 & .579 & .572 & .581 & .059 \\
+    1200 & oracle   & .656 & .569 & .604 & .631 & .579 & .608 & .036 \\
+    \midrule
+    \multicolumn{9}{l}{\emph{estimator: $+1.132$; estimator without objective model: $+0.851$}} \\
     \bottomrule
   \end{tabular}
 \end{table}
 
+\textbf{Profile-level} ($n{=}50$ profiles, conditional on these searches): at 250, learned $-$ constant $=+0.008$, CI $[-0.002,+0.018]$, TOST $p<10^{-4}$; oracle $-$ constant $=+0.047$, CI $[+0.036,+0.058]$, $d_z{=}{+}1.22$. \textbf{Search-level} ($n{=}5$ searches, the tuning procedure as the random unit): at 250, learned $-$ constant $p{=}.85$ with TOST $=.18$ (inconclusive) and oracle $-$ constant $p{=}.050$; at 1200, oracle $-$ constant $=+0.121$, CI $[+0.029,+0.213]$, $p{=}.022$, and learned $-$ constant $=+0.094$, $p{=}.062$.
 
-Per-search held-out validation gains, 50 profiles never used for tuning. At 250 candidates: constant $\{.464,.458,.473,.412,.554\}$, learned $\{.439,.455,.599,.471,.438\}$, oracle $\{.509,.569,.499,.447,.570\}$ --- oracle above constant in $5/5$. At 1200 candidates: constant $\{.411,.466,.478\}$, learned $\{.545,.680,.527\}$, oracle $\{.656,.569,.604\}$ --- oracle and learned each above constant in $3/3$. Paired contrasts at the 250 budget ($n{=}50$ profiles, averaging over search seeds): learned $-$ constant $=+0.008$, CI $[-0.002,+0.018]$, $p{=}.11$, TOST $p<10^{-4}$ (equivalent); oracle $-$ constant $=+0.047$, CI $[+0.036,+0.058]$, $d_z{=}{+}1.22$; oracle $-$ learned $=+0.039$, $d_z{=}{+}1.15$.
+\section{Claims we withdrew, and what caught them}
+\label{app:withdrawn}
 
 \begin{table}[H]
-  \caption{Held-out validation gain across five independent coefficient searches per signal. \textbf{Key take-away:} the ordering \emph{is} monotone in signal quality once search variance is accounted for --- the earlier non-monotonic result was a single-search artefact --- but the spread is small.}
-  \label{tab:matched}
-  \centering
-  \small
-  \begin{tabular}{lrrl}
+  \caption{Every claim of ours that a stricter protocol overturned. \textbf{Key take-away:} each fell to one specific methodological choice, which is the transferable part.}
+  \centering\small
+  \begin{tabular}{p{6.6cm}p{6.4cm}}
     \toprule
-    Signal & mean (sd) over 5 searches & larger budget (1200) & vs.\ constant \\
+    Claim & What overturned it \\
     \midrule
-    constant $g$ & $+0.472$ (0.051) & $+0.411$ & --- \\
-    learned $g$  & $+0.480$ (0.068) & $+0.545$ & indistinguishable \\
-    oracle $g$   & $\mathbf{+0.519}$ (0.052) & $\mathbf{+0.656}$ & higher in \textbf{5/5} searches \\
-    \midrule
-    \multicolumn{4}{l}{\emph{estimator: $+1.132$; estimator without objective model: $+0.851$}} \\
+    Signal quality does not reach behaviour at all & Paired tests on the paired design: $+0.063$, $d_z{=}{+}1.59$ at $\phi{=}0$ \\
+    A learned $g$ beats a perfect one & Five independent searches: ordering monotone, oracle above constant $5/5$ \\
+    A learned $g$ is counterproductive versus a constant & Matched per-signal tuning \\
+    A learned $g$ is equivalent to a constant & Search-level uncertainty: TOST $=.18$, inconclusive \\
+    Signal quality is simply the smallest term & A larger search roughly doubles its value \\
+    Homeostasis uniquely buys viability & Rest removed from both sides; \texttt{rule\_norest} is more viable than $\Gamma$ without rest \\
+    Homeostasis integrates stopping into the same machinery & The default rest logit is frustration-gated \\
+    P7 refutes the value of situated information & The manipulation corrupts the competitor's model instead \\
     \bottomrule
   \end{tabular}
 \end{table}
+
+\section{Profile usage for every analysis}
+\label{app:splits}
+
+The 100 profiles are partitioned once, before any tuning, and the partition never changes.
+
+\begin{table}[H]
+  \caption{Which profiles each analysis uses, and whether they participated in candidate selection. \textbf{Key take-away:} every number quoted in the abstract, body and conclusions comes from profiles that never participated in selecting a coefficient.}
+  \centering\small
+  \begin{tabular}{lccl}
+    \toprule
+    Analysis & Scoring (selection) & Evaluation & Leakage \\
+    \midrule
+    Main sweep (Sec.~6.1) & --- & all 100 & none (no tuning) \\
+    Decomposition (Sec.~6.2) & profiles 1--20 & profiles 51--100 & none \\
+    Matched tuning, 250 (Sec.~6.3) & profiles 1--20 & profiles 51--100 & none \\
+    Matched tuning, 1200 (Sec.~6.3) & profiles 1--20 & profiles 51--100 & none \\
+    Ablations (Sec.~6.4, 7.2) & --- & all 100 & none (no tuning) \\
+    Shape shift (Sec.~6.6) & --- & all 100 & none (no tuning) \\
+    Reconstruction (Sec.~7.3) & --- & 40 profiles & none (no tuning) \\
+    Maintenance (Sec.~7.4) & --- & 60 profiles & none (no tuning) \\
+    \midrule
+    \emph{Superseded shared search} (App.~\ref{app:coefsearch}) & 30 profiles & all 100 & \emph{partly in-sample} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Scoring uses 3 of the 10 seeds; evaluation always uses all 10. Only the last row involves leakage, and no number reported outside that row's own table derives from it.
 
 \section{Policy coefficient search}
 \label{app:coefsearch}
-The four action logits are linear in $d_p,d_c$ with six free coefficients. The original values $(4,-3,-3,1.5,4,-3)$ were chosen by hand. To test whether performance is limited by these particular numbers we ran a random search over 250 candidates sampled from $c_0,c_4\sim U(0,10)$; $c_1,c_5\sim U(-10,2)$; $c_2\sim U(-10,0)$; $c_3\sim U(-2,5)$, scored on a 30-profile subset and validated on 100 profiles. The matched protocol of Section~\ref{sec:matched} repeats this independently per signal with five search seeds and a strictly disjoint 50-profile validation set; those held-out numbers, not the ones below, support the paper's conclusions.
+The four action logits are linear in $d_p,d_c$ with six free coefficients; the original values $(4,-3,-3,1.5,4,-3)$ were chosen by hand. Candidates are sampled from $c_0,c_4\sim U(0,10)$; $c_1,c_5\sim U(-10,2)$; $c_2\sim U(-10,0)$; $c_3\sim U(-2,5)$.
+
+\textbf{The protocol supporting the paper} searches independently per signal, ranks candidates on the 20-profile scoring subset, and validates on the 50 strictly held-out profiles, with five search seeds at each budget (Appendix~\ref{app:splits}).
+
+\textbf{The table below is a superseded earlier run} in which a single shared search was ranked on 30 profiles and validated on all 100, including those 30. We retain it only to price the leakage: it inflates the policy term from $+0.211$ to $+0.238$ ($25.0\%$ to $27.7\%$ of the gap) and leaves the ordering unchanged. No headline number comes from it.
 \begin{table}[H]
   \caption{Effect of coefficient re-tuning at $\phi{=}0$, shared search, validated on 100 profiles including the 30 used for scoring (partly in-sample; see Section~\ref{sec:matched} for the held-out version).}
   \centering\small
@@ -623,7 +622,7 @@ The four action logits are linear in $d_p,d_c$ with six free coefficients. The o
 \section{Complete sweep metrics}
 \label{app:fulltables}
 \begin{table}[H]
-  \caption{Time-in-band, \emph{conditional on study sessions} rather than on the 40-session budget. \textbf{Caveat:} the regulated arms rest far more often than the baselines, so this denominator omits the opportunity cost of rest and flatters high-rest policies; the full-horizon version is computed in the released code as \texttt{tib\_full}.}
+  \caption{Time-in-band, conditional on study sessions.}
   \label{app:tiz}
   \centering
   \small
@@ -645,8 +644,7 @@ The four action logits are linear in $d_p,d_c$ with six free coefficients. The o
   \end{tabular}
 \end{table}
 \begin{table}[H]
-  \caption{Secondary diagnostic: terminal exam score on effective ability, \emph{not} dropout-adjusted --- arms that quit still receive a score, so cells with high dropout are not comparable. \textbf{Key take-away:} the ordering does not always follow learning gain, which is why we fix gain as the primary outcome rather than treating the exam as the objective.}
-  \label{app:exam}
+  \caption{Exam score on effective ability. \textbf{Key take-away:} the ordering matches learning gain.}
   \label{app:exam}
   \centering
   \small
@@ -719,20 +717,18 @@ The four action logits are linear in $d_p,d_c$ with six free coefficients. The o
   \caption{Six-panel summary, Okabe-Ito colourblind-safe palette with distinct markers and line styles so the panels remain legible in greyscale. \textbf{A}: performance across adversity. \textbf{B}: viability. \textbf{C}: signal quality under the fixed hand policy. \textbf{D}: robustness normalized to each arm's own $\phi{=}0$ value. \textbf{E}: signal learnability. \textbf{F}: stochastic versus deterministic policy.}
 \end{figure}
 
-\section{Compute and LLM usage}
-\label{sec:compute}
+\section{Compute resources and LLM usage}
+\label{app:compute}
+\label{app:compute}
 
 All experiments run on a commodity laptop with no GPU; the main sweep of 60{,}000 episodes takes $31.4$ s single-threaded and a single decision costs $14$ $\mu$s (full specifications in Appendix~\ref{app:compute}).
 
 We disclose LLM usage for transparency, although it is not a component of the core method: no language model participates in the agent, the environment, the baselines, or the analysis, all of which are explicit numerical simulations. LLMs served as engineering assistants in two capacities --- code assistance, via Devin as an IDE together with Kimi 3 and DeepSeek v4 Pro, and Claude Opus 5 and Claude Fable 5; and writing and editing assistance, via Claude Opus 5 and Claude Fable 5. All experimental design decisions, the committed predictions, the statistical procedures, and every interpretation are the authors' own, and all reported numbers were produced by executing the released notebook.
 
-\section{Compute resources}
-\label{app:compute}
-Intel Core i7-1165G7, 4 cores, 32 GB RAM, \textbf{no GPU}, pure Python with \texttt{scipy} and \texttt{matplotlib} as the only non-standard dependencies. The main sweep (60{,}000 episodes across 6 adversity points and 10 arms) takes $31.4$ s single-threaded; the multi-seed coefficient search adds roughly 5 minutes; the maintenance-objective experiment about 4 minutes. Per-episode cost is $0.55$ ms for 40 decisions, i.e.\ $14$ $\mu$s per decision, consistent with the operator's $O(n^2+A)$ per-session arithmetic and absence of gradients, value functions, or replay. The entire project consumed less compute than a single GPU-minute.
 
 \section{Reproducibility}
 \label{app:repro}
-Ten seeds are derived from master seed \texttt{20260820} via SHA-256, each mapped to the next prime above $10007+(\text{digest}\bmod 900000)$; profiles come from a separate fixed seed. The anonymized repository at \url{https://anonymous.4open.science/r/gamma-n2-policy-bottleneck-0000} reproduces every reported number: \texttt{python run\_all.py} runs the full pipeline in about ten minutes on a laptop with no GPU (\texttt{--full} adds the 1200-candidate tuning sweep, about thirty-five). Each experiment is a standalone script that prints the paper numbers it produces and writes JSON to \texttt{results/}; \texttt{README.md} maps every claim in the paper to the script that generates it. The first step verifies the prediction commitment hash and aborts if \texttt{predictions.txt} has been edited. Dependencies are \texttt{scipy} and \texttt{matplotlib}.
+Ten seeds are derived from master seed \texttt{20260820} via SHA-256, each mapped to the next prime above $10007+(\text{digest}\bmod 900000)$; profiles come from a separate fixed seed. The released notebook reproduces every reported number and asserts the prediction hash before running. Dependencies are \texttt{scipy} and \texttt{matplotlib}.
 
 \section{Preregistered prediction text (verbatim)}
 \label{app:prereg}
