@@ -87,7 +87,7 @@ g_{\text{prog}}[k] \leftarrow (1-\eta)\, g_{\text{prog}}[k] + \eta \cdot 4\,\tex
 g_{\text{conf}}[k] \leftarrow (1-\eta)\, g_{\text{conf}}[k] + \eta \cdot \text{acc}[k]
 \end{equation}
 
-A level where you get everything right teaches little, and so does one where you get everything wrong. A mastered level therefore yields low $g_{\text{prog}}$, correct answers barely satisfy the progress drive, it keeps growing, and the agent climbs; an impossible level also yields low $g_{\text{prog}}$ while errors inflate confidence, and the agent retreats. \textbf{No level is ever named as the target --- the band is where the dynamics come to rest.} We are precise about what that does and does not claim: the mapping $4a(1-a)$ encodes a target \emph{accuracy}, and under a Rasch model a target accuracy is a target difficulty gap. So the level identity is emergent while the challenge target is authored, and it would only be fully emergent if the mapping from consequences to satiation were itself learned. Note what is and is not learned: the agent estimates per-level accuracy from experience, but the mapping from accuracy to satiation is hand-authored, so what is learned are the sufficient statistics $g$ consumes rather than the satiation mapping itself. Two properties bound what follows. $4a(1-a)$ peaks at $a{=}0.5$, whereas expected gain here is maximized where accuracy is $0.354$, so the rule's peak sits on the wrong side of the true optimum however much data it collects. And satiation fires only on correct answers, so the quantity the policy actually receives is $p\cdot\alpha\cdot g$, not $g$: every comparison we make between a stored $g$ and the expected-gain optimum is therefore one step removed from the operative signal, and an outcome-specific $g$ able to credit informative failures --- which this environment rewards but the progress drive ignores --- would be the cleaner formulation.
+A level where you get everything right teaches little, and so does one where you get everything wrong. A mastered level therefore yields low $g_{\text{prog}}$, correct answers barely satisfy the progress drive, it keeps growing, and the agent climbs; an impossible level also yields low $g_{\text{prog}}$ while errors inflate confidence, and the agent retreats. \textbf{No level is ever named as the target --- the band is where the dynamics come to rest.} We are precise about what that does and does not claim: the mapping $4a(1-a)$ encodes a target \emph{accuracy}, and under a Rasch model a target accuracy is a target difficulty gap. So the level identity is emergent while the challenge target is authored, and it would only be fully emergent if the mapping from consequences to satiation were itself learned. Note what is and is not learned here: the agent estimates per-level accuracy from experience, but the mapping from accuracy to satiation is hand-authored, so what this rule learns are the sufficient statistics $g$ consumes rather than the mapping itself. That distinction turns out to be testable, and we test it --- an agent that instead sets $g_{\text{prog}}[k]$ from the \emph{observed improvement rate} at each level, with no authored transfer function, beats both the authored rule and a constant (Appendix~\ref{app:mapping}). Two properties bound what follows. $4a(1-a)$ peaks at $a{=}0.5$, whereas expected gain here is maximized where accuracy is $0.354$, so the rule's peak sits on the wrong side of the true optimum however much data it collects. And satiation fires only on correct answers, so the quantity the policy actually receives is $p\cdot\alpha\cdot g$, not $g$: every comparison we make between a stored $g$ and the expected-gain optimum is therefore one step removed from the operative signal, and an outcome-specific $g$ able to credit informative failures --- which this environment rewards but the progress drive ignores --- would be the cleaner formulation.
 
 \subsection{The environment, and the two things that make it a test}
 
@@ -134,7 +134,7 @@ Across the valid range the estimator falls from $+1.132$ to $+0.156$ while $\Gam
 
 \textbf{Everything here is for $\phi{=}0$ and does not transfer across the sweep.} The 100 profiles are partitioned once, before any tuning: 1--50 are the tuning pool, of which the first 20 rank candidates, and 51--100 are held out. Every number in this section, in the abstract and in the conclusions comes from the held-out 50 (Appendix~\ref{app:splits}).
 
-A $2{\times}2$ over signal quality (constant vs.\ oracle $g$) and policy parameterization (hand-chosen vs.\ searched coefficients) decomposes the gap exactly, interaction included (Table~\ref{tab:decomp}). Repeated on time-in-band the shares are $8.7$, $29.4$, $-9.7$ and $71.7\%$ --- though that metric is conditional on study sessions, and the $\Gamma$ arms rest far more than the baselines, so it measures level selection when studying rather than regulation over the full budget (Appendix~\ref{app:decomp}). The residual is what \emph{the two interventions we ran} leave unexplained; it also absorbs unsearched policy space and the fixed action representation, and is not a proven structural constant. The interaction is negative, which is worth pausing on: a searched policy extracts \emph{less} extra benefit from a perfect signal ($+0.047$) than the hand-chosen one does ($+0.065$). Either the random search failed to co-adapt the policy to the better signal, or six linear coefficients cannot express a control law that exploits it --- both readings point at channel capacity rather than at the signal.
+A $2{\times}2$ over signal quality (constant vs.\ oracle $g$) and policy parameterization (hand-chosen vs.\ searched coefficients) decomposes the gap exactly, interaction included (Table~\ref{tab:decomp}). Repeated on time-in-band the shares are $8.7$, $29.4$, $-9.7$ and $71.7\%$ --- though that metric is conditional on study sessions, and the $\Gamma$ arms rest far more than the baselines, so it measures level selection when studying rather than regulation over the full budget (Appendix~\ref{app:decomp}). The residual is what \emph{the two interventions we ran} leave unexplained. Some of it is the fixed action representation rather than anything structural: the logits read only the two drive deviations, discarding the per-level accuracy the agent already tracks, and feeding that back in buys a further $+0.196$ ($23.1\%$ of the gap) with no privileged information (Appendix~\ref{app:levelaware}). Counting it, the channel accounts for roughly half the gap against $7.7\%$ for the signal. The interaction is negative, which is worth pausing on: a searched policy extracts \emph{less} extra benefit from a perfect signal ($+0.047$) than the hand-chosen one does ($+0.065$). Either the random search failed to co-adapt the policy to the better signal, or six linear coefficients cannot express a control law that exploits it --- both readings point at channel capacity rather than at the signal.
 
 
 \begin{table}[t]
@@ -193,7 +193,7 @@ A sharper reading deserves stating. Under a Rasch model the optimal difficulty i
 \section{Limitations}
 \label{sec:limitations}
 
-The crossover is small, belongs to the deterministic ablation, and does not survive the stronger baseline. \textbf{Signal validity is incompletely operationalised}: only $g_{\text{prog}}$, as a terminal five-point correlation, with $g_{\text{conf}}$ unvalidated and no measure of the operative $p\cdot\alpha\cdot g$. \textbf{$\phi$ is a compound knob}, so the sweep cannot isolate non-linearity, and \textbf{policy tuning was a random search}, so the residual is an upper bound on what is structural. \textbf{The two sides are not representationally matched}: $\Gamma$'s channel is six linear coefficients over two drive deviations and never observes the current level, while the estimator tracks ability and applies a non-linear argmax over levels. A channel that cannot express an effective control law cannot profit from a better signal, so ``the policy is the bottleneck'' is established for \emph{this} channel and is partly a statement about its capacity; testing a richer policy class is the first thing we would run next. \textbf{Researcher degrees of freedom remain}: a self-attested hash, uncommitted gate thresholds, a post-hoc sixth condition, and untested conditions (2) and (4). Finally, every experiment here runs in seconds on a laptop with no GPU, and no language model participates in the agent, environment, baselines or analysis; LLMs were used only as coding and writing assistants (Appendix~\ref{app:compute}).
+The crossover is small, belongs to the deterministic ablation, and does not survive the stronger baseline. \textbf{Signal validity is incompletely operationalised}: only $g_{\text{prog}}$, as a terminal five-point correlation, with $g_{\text{conf}}$ unvalidated and no measure of the operative $p\cdot\alpha\cdot g$. \textbf{$\phi$ is a compound knob}, so the sweep cannot isolate non-linearity, and \textbf{policy tuning was a random search}, so the residual is an upper bound on what is structural. \textbf{The two sides are not representationally matched}: $\Gamma$'s channel is six linear coefficients over two drive deviations, while the estimator tracks ability and applies a non-linear argmax. We tested whether that is a lack of \emph{information} or of \emph{capacity} and found the latter --- the agent already holds what it needs --- but the widened channel remains hand-specified rather than searched, so ``the policy is the bottleneck'' is established for a channel we did not optimise. \textbf{Researcher degrees of freedom remain}: a self-attested hash, uncommitted gate thresholds, a post-hoc sixth condition, and untested conditions (2) and (4). Finally, every experiment here runs in seconds on a laptop with no GPU, and no language model participates in the agent, environment, baselines or analysis; LLMs were used only as coding and writing assistants (Appendix~\ref{app:compute}).
 
 \section{Future Work}
 
@@ -250,6 +250,55 @@ Can a homeostatic agent learn its satiation signal from observable consequences 
 
 \newpage
 \appendix
+
+\section{Is the gap a lack of information, or a channel that discards it?}
+\label{app:levelaware}
+
+A natural objection to our headline is that $\Gamma$ and the estimator are not representationally matched: the estimator tracks latent ability and applies a non-linear argmax over levels, while $\Gamma$'s logits read two drive deviations. On that reading the gap would be missing \emph{information}, not a narrow channel.
+
+The agent's state settles it. $\Gamma$ already maintains a per-level accuracy average $\text{acc}[k]$, the current level, and per-level $g$ --- but \texttt{select()} builds its logits from $d_p$, $d_c$ and strain alone, discarding the rest. We therefore fed one quantity the agent already holds back into the channel, adding $\pm\gamma(\text{acc}[k]-0.5)$ to the \textsc{up} and \textsc{down} logits: nothing privileged, nothing the estimator can see that $\Gamma$ cannot.
+
+\begin{table}[H]
+  \caption{Effect of letting the policy read information the agent already tracks (100 paired profiles, $\gamma{=}6$). \textbf{Key take-away:} the information was never missing --- the channel was throwing it away.}
+  \centering\small
+  \begin{tabular}{lrrrrr}
+    \toprule
+    $\phi$ & $\Gamma$\_learned & level-aware & difference & $d_z$ & estimator \\
+    \midrule
+    0.0 & +0.248 & +0.448 & $+0.200$ & $+4.53$ & +1.132 \\
+    0.6 & +0.138 & +0.214 & $+0.076$ & $+2.44$ & +0.360 \\
+    1.2 & +0.143 & \textbf{+0.174} & $+0.031$ & $+1.45$ & +0.156 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All contrasts are paired with $p<10^{-25}$. At $\phi{=}1.2$ the level-aware agent overtakes the model-based estimator without needing the deterministic ablation, so the crossover of Section~\ref{sec:policy} no longer rests on \texttt{$\Gamma$\_argmax} alone. On the 50 held-out profiles the effect is $+0.196$, or $23.1\%$ of the $\phi{=}0$ gap.
+
+Two honest qualifications. The input gain $\gamma$ was chosen by hand and the effect is \emph{monotone} in it --- $+0.306$ at $\gamma{=}1$, $+0.435$ at $6$, $+0.651$ at $20$, saturating near $+0.706$ at $80$ --- so the figure we report is a conservative lower bound rather than a tuned optimum. And at high $\gamma$ the policy approaches ``go up when the level is easy, down when it is hard,'' which resembles the \texttt{rule} baseline; it does not collapse into it, scoring $+0.651$ against the rule's $+0.574$, but the resemblance is worth naming. Under adversity the widened channel still trails the model-free estimator ($+0.191$ vs.\ $+0.267$ at $\phi{=}1.2$, $\gamma{=}12$): the channel explains a great deal, not everything.
+
+\section{Can the satiation mapping itself be learned?}
+\label{app:mapping}
+
+Our learning rule estimates $\text{acc}[k]$ from experience and then applies a fixed transfer function $4a(1-a)$. A reader may fairly object that this learns the \emph{argument} of an authored mapping rather than the mapping, and our own aligned-rule result shows the form is doing decisive work. So we asked whether the mapping can be learned instead.
+
+The agent cannot observe learning gain. But it can observe whether its accuracy at a level is \emph{improving}, which is a proxy for how much that level is teaching it. We therefore set $g_{\text{prog}}[k]$ from the observed per-visit improvement in $\text{acc}[k]$, with no authored shape and no privileged constant such as the true optimum $a^\star$.
+
+\begin{table}[H]
+  \caption{Held-out gain at $\phi{=}0$ by how $g_{\text{prog}}$ is obtained. \textbf{Key take-away:} a mapping learned from an observable proxy beats the mapping we would have written, and recovers over half of what a ground-truth signal buys.}
+  \centering\small
+  \begin{tabular}{lrl}
+    \toprule
+    How $g_{\text{prog}}$ is obtained & gain & vs.\ constant \\
+    \midrule
+    Constant & +0.261 & --- \\
+    Authored rule $4a(1-a)$ & +0.239 & $-0.022$ \\
+    \textbf{Learned from observed improvement} & \textbf{+0.298} & $+0.037$ ($p{=}4\times10^{-19}$) \\
+    Expected-gain oracle & +0.326 & $+0.065$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The learned mapping captures roughly $57\%$ of the oracle's advantage while using only what the agent can see. Combined with the widened channel of Appendix~\ref{app:levelaware} it reaches $+0.640$ against the estimator's $+1.107$ --- closing nearly half the gap with two changes that require no privileged information. The advantage is confined to the benign regime, as every signal effect in this paper is ($p{=}.66$ at $\phi{=}0.6$), and the improvement estimate is itself noisy at roughly six visits per level. What it establishes is narrower than ``the satiation mapping is learnable in general'' and stronger than the concession it replaces: in this environment the mapping can be induced from consequences, and doing so outperforms authoring it.
 
 \section{Extended related work}
 \label{app:related}
@@ -739,7 +788,7 @@ All experiments run on a commodity laptop with no GPU; the main sweep of 60{,}00
 We disclose LLM usage for transparency, although it is not a component of the core method: no language model participates in the agent, the environment, the baselines, or the analysis, all of which are explicit numerical simulations. LLMs served as engineering assistants in two capacities --- code assistance, via Devin as an IDE together with Kimi 3 and DeepSeek v4 Pro, and Claude Opus 5 and Claude Fable 5; and writing and editing assistance, via Claude Opus 5 and Claude Fable 5. All experimental design decisions, the committed predictions, the statistical procedures, and every interpretation are the authors' own, and all reported numbers were produced by executing the released notebook.
 
 
-\section{Reproducibility}
+\subsection{Reproducibility}
 \label{app:repro}
 Ten seeds are derived from master seed \texttt{20260820} via SHA-256, each mapped to the next prime above $10007+(\text{digest}\bmod 900000)$; profiles come from a separate fixed seed. The released notebook reproduces every reported number and asserts the prediction hash before running. Dependencies are \texttt{scipy} and \texttt{matplotlib}.
 
@@ -1095,7 +1144,7 @@ CFG_BASE=dict(lam_p=0.15,alpha_p=0.3,alpha_c=0.3,theta=0.7)
 \end{verbatim}
 \normalsize
 
-\section{Analysis code: paired inference and equivalence}
+\subsection{Analysis code: paired inference and equivalence}
 \label{app:paired}
 The design is within-subject --- the same 100 profiles face every arm --- so contrasts are paired and equivalence is tested explicitly rather than inferred from non-significance.
 \begin{verbatim}

@@ -20,6 +20,7 @@ STEPS = [
     ("07_permutation_p3.py", [], "multiplicity-corrected crossover"),
     ("08_reconstruction.py", [], "how private is the agent's state"),
     ("09_maintenance.py", [], "maintenance objective (sixth condition)"),
+    ("10_followups.py", [], "coupling, level-aware channel, learned mapping, rest"),
 ]
 if args.full:
     STEPS.insert(4, ("04_matched_tuning.py",

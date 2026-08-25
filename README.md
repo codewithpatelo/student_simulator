@@ -93,7 +93,21 @@ the two are not independent: search the policy harder and the value of a good si
 rises from +0.047 to +0.158, and their interaction flips from negative to strongly
 positive. A satiation signal is worth little until the channel can carry it.
 
-**Roughly 59% of the gap survives both interventions.** That residual is what the two
+**The channel discards information the agent already has.** `Γ` maintains per-level
+accuracy, the current level, and per-level `g` — but its action logits read only two
+drive deviations. Feeding one of those quantities back into the policy, using nothing
+privileged, buys `+0.196` on held-out profiles (23.1% of the gap), and at high adversity
+lets the regulated agent overtake the model-based estimator without the deterministic
+ablation. The information was never missing; the channel was throwing it away.
+
+**The satiation mapping can be induced from consequences.** Our main learning rule
+estimates per-level accuracy and then applies a hand-authored transfer function, which
+learns the *argument* of a mapping rather than the mapping. Setting `g_prog` instead from
+the *observed improvement rate* at each level — no authored shape, no privileged
+constants — beats both the authored rule and a constant (`+0.298` vs `+0.239` vs `+0.261`),
+recovering about 57% of what a ground-truth signal buys.
+
+**Roughly half of the gap survives every intervention we ran.** That residual is what the two
 interventions we ran do not explain — it also absorbs unsearched policy space and the
 fixed action representation. It is not a proven structural constant.
 
@@ -156,7 +170,7 @@ Everything else is the standard library.
 ## 5. Reproducing the paper
 
 ```bash
-python run_all.py            # ~10 min, everything except the large-budget search
+python run_all.py            # ~15 min, everything except the large-budget search
 python run_all.py --full     # ~35 min, adds the 1200-candidate tuning sweep
 python figures/make_figure.py
 ```
@@ -202,6 +216,11 @@ consumed less compute than one GPU-minute.
 | §6.6, App K | Shape shift; P7 refuted | `06_shape_shift.py` |
 | §7.3 | Reconstruction error 0.32 → 0.86 | `08_reconstruction.py` |
 | §7.4, App J | Maintenance objective; sixth condition | `09_maintenance.py` |
+| App A | Level-aware channel: information vs capacity | `10_followups.py` |
+| App B | Learned satiation mapping | `10_followups.py` |
+| §6.2 | Coupling ablation (sign flips with adversity) | `10_followups.py` |
+| §7.2 | Rest logit: drive term vs frustration gate | `10_followups.py` |
+| App | Aligned learning rule | `10_followups.py` |
 | App M | Six-panel figure | `figures/make_figure.py` |
 
 ---
@@ -253,6 +272,8 @@ specific methodological choice and the pattern is the transferable lesson.
 | Homeostasis uniquely buys viability | Removing rest from both sides: the estimator hits 100% dropout, Γ 93.5% |
 | Homeostasis integrates stopping into the same machinery | The default rest logit is frustration-gated; the drives barely participate |
 | P7 refutes the value of situated information | The manipulation corrupts the competitor's model rather than granting Γ a private signal |
+| Homeostasis uniquely buys viability (second pass) | Removing the drive term from the rest logit raises dropout from 1.0% to 20.2% — the drives *do* help compute when rest fires |
+| The agent learns `g` from observable consequences | It learns the statistic an authored mapping consumes; a genuinely learned mapping is a separate arm, added in response to review |
 
 ---
 
@@ -342,7 +363,7 @@ produced by executing the scripts in this repository.
                   The Policy Bottleneck in Homeostatic Agents},
   year         = {2026},
   howpublished = {LatinX in AI Workshop, NeurIPS 2026},
-  note         = {Code: https://anonymous.4open.science/r/student_simulator-0AA6}
+  note         = {Code: https://anonymous.4open.science/r/gamma-n2-policy-bottleneck-0000}
 }
 ```
 

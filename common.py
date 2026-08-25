@@ -15,7 +15,10 @@ BASE_COEF = (4.0, -3.0, -3.0, 1.5, 4.0, -3.0)   # hand-chosen action logits
 G_MODE = {"gamma_learned": "learned", "gamma_argmax": "learned",
           "gamma_restdrive": "learned", "gamma_fixed": "fixed",
           "gamma_naive": "naive", "gamma_oracle": "oracle",
-          "gamma_oracle_corrected": "oracle_corrected"}
+          "gamma_oracle_corrected": "oracle_corrected",
+          "gamma_aligned": "learned_aligned", "gamma_nocoupling": "learned",
+          "gamma_purestrain": "learned",
+          "gamma_levelaware": "learned", "gamma_mapping": "learned_mapping"}
 ARMS = ["gamma_learned", "gamma_argmax", "gamma_restdrive", "gamma_fixed",
         "gamma_naive", "gamma_oracle", "gamma_oracle_corrected", "rule", "rule_norest",
         "estimator", "estimator_norest", "estimator_noobj"]
@@ -27,6 +30,9 @@ def build(arm, profile, coef=None, rest_mode=None):
         kw = dict(**C.CFG_BASE, g_mode=G_MODE[arm], coupling_mode="receiver")
         if arm == "gamma_argmax":    kw["action_mode"] = "argmax"
         if arm == "gamma_restdrive": kw["rest_mode"] = "drive"
+        if arm == "gamma_nocoupling": kw["coupling"] = False
+        if arm == "gamma_purestrain": kw["rest_mode"] = "pure_strain"
+        if arm == "gamma_levelaware": kw["level_aware"] = True
         if rest_mode:                kw["rest_mode"] = rest_mode
         if coef:                     kw["coef"] = coef
         return C.GammaAgent(C.GCfg(**kw), profile), True
@@ -35,6 +41,7 @@ def build(arm, profile, coef=None, rest_mode=None):
     if arm == "estimator":        return C.BayesianAgent(profile, rest=True), False
     if arm == "estimator_norest": return C.BayesianAgent(profile, rest=False), False
     if arm == "estimator_noobj":  return C.BayesianNoObjAgent(profile, rest=True), False
+    if arm == "estimator_restmatched": return C.BayesianRestMatchedAgent(profile), False
     raise ValueError(arm)
 
 

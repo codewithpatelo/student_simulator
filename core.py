@@ -94,7 +94,9 @@ class GCfg:
         self.g_naive=kw.get("g_naive",0.5)
         self.action_mode=kw.get("action_mode","softmax")   # softmax | argmax
         self.rest_mode=kw.get("rest_mode","gated")  # gated | drive | none
-        self.coef=kw.get("coef",(4.0,-3.0,-3.0,1.5,4.0,-3.0))  # up_p,up_c,stay_k,stay_b,down_c,down_p          # gated | drive
+        self.coef=kw.get("coef",(4.0,-3.0,-3.0,1.5,4.0,-3.0))
+        self.level_aware=kw.get("level_aware",False)  # let logits read acc_ema at the current level
+        self.level_gain=kw.get("level_gain",6.0)  # up_p,up_c,stay_k,stay_b,down_c,down_p          # gated | drive
 
 class GammaAgent:
     def __init__(self,cfg,profile):
@@ -102,7 +104,7 @@ class GammaAgent:
         self.d_prog=0.5; self.d_conf=0.5
         self.g_prog={k:cfg.g_init_p for k in NIVELES}
         self.g_conf={k:cfg.g_init_c for k in NIVELES}
-        self.acc_ema={}; self.nivel=1; self.frust=0.0
+        self.acc_ema={}; self._acc_prev={}; self.nivel=1; self.frust=0.0
         self.consec_high=0; self.abandono=False; self.dropout_session=None
     def _pressure(self,d): return min(1.0,abs(d-self.cfg.theta)/0.8)
     def basal(self):
@@ -130,12 +132,21 @@ class GammaAgent:
         if self.cfg.n_drives>=2:
             if self.cfg.rest_mode=="gated":
                 l_rest=2*max(0.0,dc)*strain+4*strain
+            elif self.cfg.rest_mode=="pure_strain":
+                l_rest=4*strain          # drive term removed: frustration gate only
             elif self.cfg.rest_mode=="none":
                 l_rest=-1e9          # rest unavailable: isolates drives from the frustration gate
             else:
                 l_rest=3.0*max(0.0,dc)+2.0*strain-1.2
             c=self.cfg.coef
             logits=[c[0]*dp+c[1]*dc, c[2]*(abs(dp)+abs(dc))+c[3], c[4]*dc+c[5]*dp, l_rest]
+            if self.cfg.level_aware:
+                # The agent already tracks acc_ema per level; the default logits discard it.
+                # Feed it in: too-easy (high acc) pushes up, too-hard (low acc) pushes down.
+                a=self.acc_ema.get(self.nivel,0.5)
+                lg=self.cfg.level_gain
+                logits[0]+=lg*(a-0.5)      # UP when the level is easy
+                logits[2]+=lg*(0.5-a)      # DOWN when the level is hard
         else:
             logits=[4*dp,-3*abs(dp)+1.5,-4*dp,4*strain]
         acts=["subir","mantener","bajar","descansar"]
@@ -160,6 +171,25 @@ class GammaAgent:
             # Dividing by a constant therefore makes the drive chase p*E[gain].
             self.g_prog[nivel]=min(1.0,env.expected_gain(nivel)/0.042)
             self.g_conf[nivel]=rasch_p(env.h_eff,nivel)
+        elif self.cfg.g_mode=="learned_mapping":
+            # No authored transfer function. The agent cannot observe learning gain,
+            # but it CAN observe whether its accuracy at a level is improving -- an
+            # observable proxy for how much that level is teaching it. g_prog is set
+            # from that improvement rate, so the productive region is discovered
+            # rather than specified.
+            prev=self._acc_prev.get(nivel)
+            a=self.acc_ema[nivel]
+            if prev is not None:
+                improve=max(0.0,a-prev)/self.cfg.beta      # per-visit improvement, normalised
+                self.g_prog[nivel]=(1-self.cfg.eta)*self.g_prog[nivel]+self.cfg.eta*min(1.0,improve)
+            self._acc_prev[nivel]=a
+            self.g_conf[nivel]=(1-self.cfg.eta)*self.g_conf[nivel]+self.cfg.eta*a
+        elif self.cfg.g_mode=="learned_aligned":
+            # Same observable input as "learned", but the functional form peaks at the
+            # accuracy that maximises true expected gain (a*=0.354), not at a=0.5.
+            a=self.acc_ema[nivel]; A_STAR=0.354; W=0.18
+            self.g_prog[nivel]=(1-self.cfg.eta)*self.g_prog[nivel]+self.cfg.eta*math.exp(-((a-A_STAR)**2)/(2*W*W))
+            self.g_conf[nivel]=(1-self.cfg.eta)*self.g_conf[nivel]+self.cfg.eta*a
         elif self.cfg.g_mode=="oracle_corrected":
             # Divides by p(correct) so that the EXPECTED drive reduction is
             # proportional to true expected gain: p * (E[gain]/p) = E[gain].
@@ -203,6 +233,31 @@ class BayesianNoObjAgent:
     def select(self,rng,env):
         if self.rest and self.frust>0.6*self.p["umbral"]: return "descansar"
         best=min(NIVELES,key=lambda k: abs(k-self.h_hat))
+        if best>self.nivel: return "subir"
+        if best<self.nivel: return "bajar"
+        return "mantener"
+    def study(self,env,outcome,nivel):
+        p=rasch_p(self.h_hat,nivel)
+        self.h_hat+=0.3*(float(outcome["correcto"])-p)
+        self.h_hat=max(0.5,min(6.0,self.h_hat))
+
+class BayesianRestMatchedAgent:
+    """Estimator forced to spend `rest_budget` sessions resting, spread evenly.
+    Isolates how much of Gamma's deficit is simply the cost of resting more."""
+    def __init__(self,profile,rest=True,rest_budget=9,horizon=40):
+        self.p=profile; self.rest=rest; self.nivel=1; self.h_hat=2.5
+        self.frust=0.0; self.consec_high=0; self.abandono=False
+        self.dropout_session=None; self.acc_ema={}; self.t=0
+        self.forced={int(round((i+1)*horizon/(rest_budget+1))) for i in range(rest_budget)}
+    def select(self,rng,env):
+        self.t+=1
+        if (self.t-1) in self.forced: return "descansar"
+        if self.rest and self.frust>0.6*self.p["umbral"]: return "descansar"
+        best,bg=self.nivel,-1
+        for k in NIVELES:
+            gap=k-self.h_hat; p=rasch_p(self.h_hat,k)
+            g=bell_curve(gap)*(p+(1-p)*0.3)
+            if g>bg: best,bg=k,g
         if best>self.nivel: return "subir"
         if best<self.nivel: return "bajar"
         return "mantener"
