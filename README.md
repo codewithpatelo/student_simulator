@@ -107,7 +107,7 @@ the *observed improvement rate* at each level — no authored shape, no privileg
 constants — beats both the authored rule and a constant (`+0.298` vs `+0.239` vs `+0.261`),
 recovering about 57% of what a ground-truth signal buys.
 
-**Roughly half of the gap survives every intervention we ran.** That residual is what the two
+**Roughly half of the gap survives every intervention we ran.** Counting the widened channel, the residual falls from the 69.5% reported in the paper's main decomposition (which holds the action representation fixed) to roughly 46%. That residual is what the
 interventions we ran do not explain — it also absorbs unsearched policy space and the
 fixed action representation. It is not a proven structural constant.
 
@@ -200,28 +200,28 @@ consumed less compute than one GPU-minute.
 | Paper | Claim / number | Script |
 |---|---|---|
 | §5.3 | Commitment hash `6e888c7e…` | `00_predictions.py` |
-| §5.2, App C | Gate passes φ≤1.2, fails at φ=1.6 | `01_quality_gate.py` |
+| §5.2, App F | Gate passes φ≤1.2, fails at φ=1.6 | `01_quality_gate.py` |
 | §6.1 | Main sweep; estimator +1.132 → +0.156 | `02_main_sweep.py` |
 | §6.1 | P2 slopes: −0.070 vs −0.808, d_z=+4.65 | `02_main_sweep.py` |
 | §6.5 | P4 argmax > softmax, d_z +0.21 → +3.23 | `02_main_sweep.py` |
 | §6.5 | P5 oracle − constant, +0.063 then equivalence | `02_main_sweep.py` |
 | §6.5 | P3 crossover +0.045 at φ=1.2 | `02_main_sweep.py` |
 | §6.5 | Multiplicity-corrected P3, p=.0005 | `07_permutation_p3.py` |
-| §6.2, App F | 7.7 / 25.0 / −2.1 / 69.5 % decomposition | `03_decomposition.py` |
-| §6.3, App U | Matched tuning, 250 and 1200 budgets | `04_matched_tuning.py` |
+| §6.2, App H | 7.7 / 25.0 / −2.1 / 69.5 % decomposition | `03_decomposition.py` |
+| §6.3, App P | Matched tuning, 250 and 1200 budgets | `04_matched_tuning.py` |
 | §6.3 | learned − constant equivalence (TOST) | `04_matched_tuning.py` |
-| §6.4, App H | Objective-model ablation | `05_ablations.py` |
-| §7.2, App I | Viability ablation (rest removed both sides) | `05_ablations.py` |
+| §6.4, App K | Objective-model ablation | `05_ablations.py` |
+| §7.2, App N | Viability ablation (rest removed both sides) | `05_ablations.py` |
 | §7.2 | restdrive: best at φ=0, 4–17% dropout | `05_ablations.py` |
-| §6.6, App K | Shape shift; P7 refuted | `06_shape_shift.py` |
+| §6.6, App T | Shape shift; P7 refuted | `06_shape_shift.py` |
 | §7.3 | Reconstruction error 0.32 → 0.86 | `08_reconstruction.py` |
-| §7.4, App J | Maintenance objective; sixth condition | `09_maintenance.py` |
+| §7.4, App O | Maintenance objective; sixth condition | `09_maintenance.py` |
 | App A | Level-aware channel: information vs capacity | `10_followups.py` |
 | App B | Learned satiation mapping | `10_followups.py` |
 | §6.2 | Coupling ablation (sign flips with adversity) | `10_followups.py` |
 | §7.2 | Rest logit: drive term vs frustration gate | `10_followups.py` |
-| App | Aligned learning rule | `10_followups.py` |
-| App M | Six-panel figure | `figures/make_figure.py` |
+| App L | Aligned learning rule | `10_followups.py` |
+| App V | Six-panel figure | `figures/make_figure.py` |
 
 ---
 
